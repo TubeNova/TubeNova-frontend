@@ -87,4 +87,24 @@ button {
 input[type="button"], input[type="submit"] {
     cursor: pointer;
 }
+input, input::placeholder {
+    font-family: "NanumSquareRound";
+}
+input::placeholder {
+    font-size: 0.8rem;
+}
+html {
+            ${({ theme }) => theme.media.mobile} {
+                font-size: 9px;
+            }
+            ${({ theme }) => theme.media.tablet} {
+                font-size: 10px;
+            }
+            ${({ theme }) => theme.media.laptop1440} {
+                font-size: 11px;
+            }
+            ${({ theme }) => theme.media.laptop1680} {
+                font-size: 13px;
+            }
+        }
 `;

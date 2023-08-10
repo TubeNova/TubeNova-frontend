@@ -14,7 +14,7 @@ const NavContainer = styled.nav`
   box-sizing: border-box;
   box-shadow: 0px 0.5px 5px 3px rgba(0, 0, 0, 0.1);
   position: fixed;
-  height: 4.2rem;
+  height: 60px;
   top: 0;
 `;
 const NavLeftBox = styled.div`
@@ -116,7 +116,7 @@ const ModalContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 2.5rem 1.1rem;
-  width: 30%;
+  width: 30vw;
   gap: 15px;
   height: fit-content;
   border: none;
