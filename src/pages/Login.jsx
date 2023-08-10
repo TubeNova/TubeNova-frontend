@@ -14,31 +14,7 @@ const LoginContainer = styled.form`
   width: 16rem;
   gap: 20px;
 `;
-const UserContainer = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 5px;
-`;
-const UserLabel = styled.label`
-  padding: 5px 0;
-  width: 148px;
-  font-size: 15px;
-  &.border-right {
-    box-sizing: content-box;
-    border-right: 1px solid ${({ theme }) => theme.colors.primary};
-  }
-  &:hover {
-    cursor: pointer;
-  }
-  &.checked {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: #fff;
-  }
-`;
-const UserInput = styled.input`
-  display: none;
-`;
+
 
 const IdInput = styled.input`
   height: 1.4rem;
@@ -107,7 +83,7 @@ export default function Login({setUpdateModalOpen}) {
           handleLogin(e);
         }}
       >
-        <IdInput type="text" placeholder="아이디" />
+        <IdInput type="text" placeholder="이메일" />
         <PwInput type="password" placeholder="비밀번호" />
         <LoginButton type="submit" value="로그인" />
         <SocialLoginButton>

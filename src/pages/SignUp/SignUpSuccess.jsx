@@ -1,8 +1,10 @@
 import { styled } from "styled-components";
 import { SocialLoginButton } from "../Login";
 import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { InterestData } from "../../data/InterestData";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -11,7 +13,7 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 20rem;
+  width: 25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,33 +34,49 @@ const Title = styled.h1`
   font-family: "NanumSquareRoundEB";
   width: fit-content;
   padding: 0.5rem 1.2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
-const Form = styled.form`
+const InterestGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 1rem;
+  row-gap: 1rem;
+`;
+const InterestItem = styled.button`
+  width: 5rem;
+  height: 5rem;
   display: flex;
+  background-color: #faf8ff;
+  border-radius: 0.5rem;
   flex-direction: column;
-`;
-
-const InputContainer = styled.label``;
-const Input = styled.input``;
-const SocialSignUpButton = styled(SocialLoginButton)`
-  width: 15rem;
-  padding: 0.5rem 2rem;
-  justify-content: left;
-  padding: 0.5rem 1rem;
-`;
-const SignUpButtonText = styled.span`
-  display: flex;
   justify-content: center;
-  width: 12rem;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transform 0.3s;
+  &.selected {
+    border: 1.2px solid ${({theme}) => theme.colors.primary};
+    transform: scale(110%);
+  }
 `;
-const Icon = styled.span`
-  font-size: 1rem;
+const Icon = styled.span``;
+const ItemName = styled.p`
+  text-align: center;
+`;
+const NextButton = styled(SocialLoginButton)`
+  width: 15rem;
+  padding: 0.5rem 1rem;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: #fff;
 `;
 
-export default function SignUp() {
+export default function SignUpSuccess() {
   const navigate = useNavigate();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -67,21 +85,9 @@ export default function SignUp() {
     >
       <Wrapper>
         <Container>
-          <Title>환영합니다🥳</Title>
-          <SocialSignUpButton>
-            {" "}
-            <FcGoogle />
-            <SignUpButtonText>구글 계정으로 회원가입</SignUpButtonText>
-          </SocialSignUpButton>
-          <SocialSignUpButton
-            onClick={() => {
-              navigate("email");
-            }}
-          >
-            {" "}
-            <Icon>📧</Icon>
-            <SignUpButtonText>이메일로 회원가입</SignUpButtonText>
-          </SocialSignUpButton>
+          <Title>가입 완료!</Title>
+
+          <NextButton onClick={()=>{navigate("/")}}>홈으로 가기</NextButton>
         </Container>
       </Wrapper>
     </motion.div>
