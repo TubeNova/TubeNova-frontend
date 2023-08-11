@@ -4,12 +4,13 @@ import {
   Route,
   Link,
   Routes,
-} from "react-router-dom";
-import Main from "./pages/Main";
-import Nav from "./components/Nav";
-import SignUp from "./pages/SignUp/SignUp";
-import { styled } from "styled-components";
-import SignUpEmail from "./pages/SignUp/SignUpEmail";
+} from 'react-router-dom';
+import Main from './pages/Main';
+import Nav from './components/Nav';
+import SignUp from './pages/SignUp/SignUp';
+import { styled } from 'styled-components';
+import SignUpEmail from './pages/SignUp/SignUpEmail';
+import Upload from './pages/Upload';
 import SignUpInterest from "./pages/SignUp/SignUpInterest";
 import SignUpSuccess from "./pages/SignUp/SignUpSuccess";
 const Wrapper = styled.div`
@@ -33,6 +34,7 @@ export default function Router() {
             <Route path={`/sign-up/interest`} element={<SignUpInterest />} />
             <Route path={`/sign-up/success`} element={<SignUpSuccess />} />
           </Route>
+          <Route path={`/upload`} element={<Upload />} />
         </Routes>
       </Wrapper>
     </BrowserRouter>
