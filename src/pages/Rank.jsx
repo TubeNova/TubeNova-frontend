@@ -131,7 +131,6 @@ const BasicCategoryList = [
 const handleCategoryClick = (e) => {
   const target = e.target;
   const parent = e.target.parentElement
- console.log(target)
   if (Array.from(target.classList).indexOf("active") < 0) {
     Array.from(parent.getElementsByClassName("active")).forEach((item) => {
         item.classList.remove("active")
