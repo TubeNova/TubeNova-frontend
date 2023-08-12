@@ -16,6 +16,7 @@ const NavContainer = styled.nav`
   position: fixed;
   height: 60px;
   top: 0;
+  z-index: 10;
 `;
 const NavLeftBox = styled.div`
   display: flex;

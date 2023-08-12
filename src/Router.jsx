@@ -13,6 +13,7 @@ import SignUpEmail from './pages/SignUp/SignUpEmail';
 import Upload from './pages/Upload';
 import SignUpInterest from "./pages/SignUp/SignUpInterest";
 import SignUpSuccess from "./pages/SignUp/SignUpSuccess";
+import Rank from './pages/Rank';
 const Wrapper = styled.div`
   margin-top: 60px;
   width: 100%;
@@ -35,6 +36,7 @@ export default function Router() {
             <Route path={`/sign-up/success`} element={<SignUpSuccess />} />
           </Route>
           <Route path={`/upload`} element={<Upload />} />
+          <Route path={`/rank`} element={<Rank />}/>
         </Routes>
       </Wrapper>
     </BrowserRouter>
