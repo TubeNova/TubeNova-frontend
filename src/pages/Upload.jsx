@@ -33,7 +33,6 @@ const Upload = () => {
   const [rating, setRating] = useState(0);
 
   const handleSubmit = () => {
-    // 서버 통신
     const data = {
       category,
       videoLink,
@@ -43,7 +42,11 @@ const Upload = () => {
     };
 
     axios
-      .post('서버 URL', data)
+      .post('서버 URL', JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
       .then((response) => {
         // Handle response
       })
