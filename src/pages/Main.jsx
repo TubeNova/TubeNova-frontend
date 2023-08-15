@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { IoPerson } from "react-icons/io5";
@@ -7,6 +7,7 @@ import { FaHeart } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Reviews } from "../data/Reviews";
+import MainContentsRow from "../components/MainContentsRow";
 
 const Container = styled.div`
   display: flex;
@@ -90,6 +91,16 @@ const ReviewItem = styled.div`
   flex-direction: column;
   width: calc((100% - 3.6rem) / 4);
   gap: 0.5rem;
+  cursor: pointer;
+  transition: 0.3s;
+  &:hover img {
+    transform: scale(110%);
+    transition: 0.3s;
+  }
+  &:not(hover) img {
+    transform: scale(100%);
+    transition: 0.3s;
+  }
 `;
 const ReviewThumbnailContainer = styled.div`
   display: flex;
@@ -109,6 +120,7 @@ const ReviewVideoTitle = styled.p`
   padding: 0.7rem;
   box-sizing: border-box;
   font-size: 0.7rem;
+  z-index: 1;
 `;
 const ReviewUserContainer = styled.div`
   display: flex;
@@ -156,127 +168,32 @@ const ReviewLikes = styled.span`
     font-size: 1rem;
   }
 `;
-
-const BasicCategoryList = [
-  { name: "전체" },
-  { name: "엔터테인먼트" },
-  { name: "음악 · 댄스" },
-  { name: "뷰티 · 패션" },
-  { name: "게임" },
-];
-
-const handleCategoryClick = (e) => {
-  const target = e.target;
-  const parent = e.target.parentElement;
-  if (Array.from(target.classList).indexOf("active") < 0) {
-    Array.from(parent.getElementsByClassName("active")).forEach((item) => {
-      item.classList.remove("active");
-    });
-    target.classList.add("active");
-  }
-};
+const Footer = styled.footer`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
+`
+const Logo = styled.h1`
+    color: ${({theme}) => theme.colors.primary};
+    font-size: 1.8rem;
+    font-family: "NanumSquareRoundEB";
+`
+const Info = styled.p`
+    color: #333;
+    font-size: 0.8rem;
+`
 
 export default function Main() {
-  const [rankVisible, setRankVisible] = useState(0);
-  const [rankBack, setRankBack] = useState(false);
-  useEffect(() => {
-    rankVisible === 0 && setRankBack(false);
-    rankVisible + 4 >= Reviews.length && setRankBack(true);
-  }, [rankVisible]);
-
   return (
     <Container>
-      <ContentRow>
-        <ContentRowHeader>
-          <ContentRowTitle>인기 Top 10</ContentRowTitle>
-          <ContentRowMore to="/rank">
-            더보기 <FiChevronRight />
-          </ContentRowMore>
-        </ContentRowHeader>
-        <ContentCategoryList>
-          {BasicCategoryList.map((item) => {
-            return (
-              <ContentCategoryItem
-                className={item.name === "전체" && "active"}
-                onClick={(e) => {
-                  handleCategoryClick(e);
-                }}
-              >
-                {item.name}
-              </ContentCategoryItem>
-            );
-          })}
-        </ContentCategoryList>
-
-        <ReviewRow>
-          <CarouselButtonContainer>
-            <CarouselPreviousButton
-              onClick={() => {
-                setRankBack(true);
-                setRankVisible((prev) => (prev === 0 ? 0 : prev - 4));
-              }}
-            >
-              <FiChevronLeft />
-            </CarouselPreviousButton>
-            <CarouselNextButton
-              onClick={() => {
-                setRankBack(false);
-                setRankVisible((prev) =>
-                  prev + 4 >= Reviews.length ? prev : prev + 4
-                );
-              }}
-            >
-              <FiChevronRight />
-            </CarouselNextButton>
-          </CarouselButtonContainer>
-          {Reviews.map((item, index) => {
-            return (index >= rankVisible) & (index <= rankVisible + 3) ? (
-              <AnimatePresence mode="wait">
-                <ReviewItem
-                  as={motion.div}
-                  initial={{ x: rankBack ? -200 : 200 }}
-                  animate={{ x: 0 }}
-                  exit={{ opacity: 1, x: rankBack ? 200 : -200 }}
-                  transition={{ duration: 0.15 }}
-                  key={index}
-                >
-                  <ReviewThumbnailContainer>
-                    <ReviewThumbnail src={item.thumbnail} />
-                    <ReviewVideoTitle>{item.videoTitle}</ReviewVideoTitle>
-                  </ReviewThumbnailContainer>
-                  <ReviewUserContainer>
-                    <ReviewUser>
-                      <IoPerson />
-                      {item.userName}
-                    </ReviewUser>
-                    <ReviewRate>
-                      {(function () {
-                        const stars = [];
-                        for (let i = 0; i < item.rate; i++) {
-                          stars.push(<AiFillStar />);
-                        }
-                        for (let i = 0; i < 5 - item.rate; i++) {
-                          stars.push(<AiOutlineStar />);
-                        }
-                        return stars;
-                      })()}
-                    </ReviewRate>
-                  </ReviewUserContainer>
-                  <ReviewDesc>{item.desc}</ReviewDesc>
-                  <ReviewItemFooter>
-                    <ReviewDate>{item.date}</ReviewDate>
-                    <ReviewLikes>
-                      <FaHeart />
-                      {item.likes}
-                    </ReviewLikes>
-                  </ReviewItemFooter>
-                </ReviewItem>
-              </AnimatePresence>
-            ) : null;
-          })}
-        </ReviewRow>
-      </ContentRow>
-
+        <MainContentsRow contentsTitle="인기 Top 10"/>
+        <MainContentsRow contentsTitle="최신 리뷰"/>
+        <MainContentsRow contentsTitle="user 님 취향저격 리뷰 🔫❤️" userLikes={true}/>
+        <Footer>
+            <Logo>TubeNova</Logo>
+            <Info>copyright © 2023 TubeNova All Rights Reserved.</Info>
+        </Footer>
     </Container>
   );
 }
