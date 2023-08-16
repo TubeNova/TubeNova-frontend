@@ -1,9 +1,18 @@
 import { styled, css } from "styled-components";
 import { NavCategoryData } from "../data/CategoryData";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BiSearch, BiSolidChevronDown } from "react-icons/bi";
+import {
+  BiPencil,
+  BiSearch,
+  BiSolidChevronDown,
+  BiSolidChevronUp,
+} from "react-icons/bi";
 import { useEffect, useState } from "react";
 import Login from "../pages/Login";
+import { useRecoilState } from "recoil";
+import { LoginStateAtom } from "../atom";
+import { IoPerson } from "react-icons/io5";
+import { FiLogOut } from "react-icons/fi";
 
 const NavContainer = styled.nav`
   display: flex;
@@ -97,6 +106,39 @@ const UserTabButton = styled.button`
   gap: 0.3rem;
   font-family: "NanumSquareRoundEB";
 `;
+const UserToolModalContainer = styled.div`
+  position: fixed;
+  right: 1rem;
+  display: flex;
+  z-index: 99;
+  border-radius: 1.2rem;
+  background: #fff;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem 2.3rem;
+  margin-top: 0.1rem;
+  gap: 1.2rem;
+`;
+const Tool = styled.button`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  align-items: center;
+`;
+const ToolIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  svg {
+    font-size: 1.7rem;
+    color: #fff;
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 100%;
+    padding: 0.7rem;
+  }
+`;
+const ToolName = styled.p``;
 const Overlay = styled.div`
   width: 100%;
   height: 100vh;
@@ -128,15 +170,17 @@ const ModalContainer = styled.div`
 
 export default function Nav() {
   const [userTabActive, setUserTabActice] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginStateAtom);
   const [modalOpen, setModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [userToolModal, setUserToolModal] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     if (!updateModalOpen) {
       setModalOpen(false);
     }
   }, [updateModalOpen]);
+
   return (
     <>
       <NavContainer>
@@ -163,9 +207,14 @@ export default function Nav() {
               <BiSearch />
             </NavSearchButton>
           </NavSearchBox>
-          {isLoggedIn ? (
-            <UserTabButton>
-              user님 <BiSolidChevronDown />
+          {isLoggedIn.state ? (
+            <UserTabButton
+              onClick={() => {
+                setUserToolModal((prev) => !prev);
+              }}
+            >
+              user님{" "}
+              {userToolModal ? <BiSolidChevronUp /> : <BiSolidChevronDown />}
             </UserTabButton>
           ) : (
             <NavLoginButton
@@ -193,6 +242,45 @@ export default function Nav() {
             <Login setUpdateModalOpen={setUpdateModalOpen} />
           </ModalContainer>
         </Overlay>
+      )}
+      {userToolModal && (
+        <UserToolModalContainer>
+          <Tool
+            onClick={() => {
+              navigate("/mypage");
+              setUserToolModal(false)
+            }}
+          >
+            <ToolIcon>
+              <IoPerson />
+            </ToolIcon>
+            <ToolName>마이페이지</ToolName>
+          </Tool>
+          <Tool
+            onClick={() => {
+              navigate("/upload");
+              setUserToolModal(false)
+            }}
+          >
+            <ToolIcon>
+              <BiPencil />
+            </ToolIcon>
+            <ToolName>글쓰기</ToolName>
+          </Tool>
+          <Tool
+            onClick={() => {
+              setIsLoggedIn((prev) => {
+                return { ...prev, state: false };
+              });
+              setUserToolModal(false)
+            }}
+          >
+            <ToolIcon>
+              <FiLogOut />
+            </ToolIcon>
+            <ToolName>로그아웃</ToolName>
+          </Tool>
+        </UserToolModalContainer>
       )}
     </>
   );
