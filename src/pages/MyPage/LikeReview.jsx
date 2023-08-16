@@ -116,14 +116,7 @@ const LikeReview = () => {
       <ContentRow>
         <ReviewRow>
           {Reviews.map((item, index) => (
-            <ReviewItem
-              as={motion.div}
-              initial={{ x: 200 }}
-              animate={{ x: 0 }}
-              exit={{ opacity: 1, x: -200 }}
-              transition={{ duration: 0.15 }}
-              key={index}
-            >
+            <ReviewItem>
               <ReviewThumbnailContainer>
                 <ReviewThumbnail src={item.thumbnail} />
                 <ReviewVideoTitle>{item.videoTitle}</ReviewVideoTitle>

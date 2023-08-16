@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { LoginStateAtom } from "../atom";
 
 const ServiceTitle = styled.p`
   font-size: 2rem;
@@ -14,7 +16,6 @@ const LoginContainer = styled.form`
   width: 16rem;
   gap: 20px;
 `;
-
 
 const IdInput = styled.input`
   height: 1.4rem;
@@ -70,11 +71,21 @@ const SignUpButton = styled.button`
   text-decoration: underline;
 `;
 
-export default function Login({setUpdateModalOpen}) {
+export default function Login({ setUpdateModalOpen }) {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginStateAtom)
+  const [loginInfo, setLoginInfo] = useState({
+    email: "",
+    pw: "",
+  });
   const handleLogin = (e) => {
     e.preventDefault();
+    if (loginInfo.email.length > 0 && loginInfo.pw.length > 0) {
+      setUpdateModalOpen(false)
+      setIsLoggedIn((prev) => {return({...prev, state: true})})
+    }
   };
+
   return (
     <>
       <ServiceTitle>TubeNova</ServiceTitle>
@@ -83,8 +94,26 @@ export default function Login({setUpdateModalOpen}) {
           handleLogin(e);
         }}
       >
-        <IdInput type="text" placeholder="이메일" />
-        <PwInput type="password" placeholder="비밀번호" />
+        <IdInput
+          type="text"
+          placeholder="이메일"
+          value={loginInfo.email}
+          onChange={(e) =>
+            setLoginInfo((prev) => {
+              return { ...prev, email: e.target.value };
+            })
+          }
+        />
+        <PwInput
+          type="password"
+          placeholder="비밀번호"
+          value={loginInfo.pw}
+          onChange={(e) =>
+            setLoginInfo((prev) => {
+              return { ...prev, pw: e.target.value };
+            })
+          }
+        />
         <LoginButton type="submit" value="로그인" />
         <SocialLoginButton>
           <FcGoogle />
@@ -92,9 +121,9 @@ export default function Login({setUpdateModalOpen}) {
         </SocialLoginButton>
         <SignUpButton
           onClick={() => {
-            navigate("/sign-up", {state: {modalOpen: false}});
-            setUpdateModalOpen(false)
-        }}
+            navigate("/sign-up", { state: { modalOpen: false } });
+            setUpdateModalOpen(false);
+          }}
         >
           회원가입하기
         </SignUpButton>
