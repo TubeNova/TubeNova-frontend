@@ -3,7 +3,6 @@ import { SocialLoginButton } from "../Login";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { InterestData } from "../../data/InterestData";
 import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`

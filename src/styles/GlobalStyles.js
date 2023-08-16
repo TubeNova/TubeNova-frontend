@@ -93,6 +93,24 @@ input, input::placeholder {
 input::placeholder {
     font-size: 0.8rem;
 }
+input:focus{
+    outline: 0;
+}
+input {
+    border: 0;
+}
+textarea {
+    resize:none;
+    border: 0;
+    font-family: "NanumSquareRound";
+    line-height: 1.4;
+    &:focus {
+        outline: 0;
+    }
+    &::placeholder{
+        font-family: "NanumSquareRound";
+    }
+}
 html {
             ${({ theme }) => theme.media.mobile} {
                 font-size: 9px;
