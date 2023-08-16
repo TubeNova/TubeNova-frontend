@@ -1,162 +1,370 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import axios from "axios";
+import { RxTriangleDown } from "react-icons/rx";
+import { BsBackspaceFill, BsCheck, BsPlusCircle } from "react-icons/bs";
+import { PiBackspace } from "react-icons/pi";
+import { IoPerson } from "react-icons/io5";
+import CategoryGrid from "../components/CategoryGrid";
+import { CategoryGridData } from "../data/CategoryGridData";
+import { useNavigate } from "react-router-dom";
 
-const categories = [
-  '라이프 스타일',
-  '음악/댄스',
-  '뷰티/패션',
-  '영화/애니',
-  '키즈',
-  '게임',
-  '여행/아웃도어',
-  '스포츠/헬스',
-  '뉴스/정치/이슈',
-  '정부/기관/비영리',
-  '엔터테인먼트',
-  '푸드/쿠킹',
-  '인물/유명인',
-  'IT/기술/과학',
-  '동물/펫',
-  '차/배/바이크',
-  '경제/금융/제태크',
-  '취미',
-  '교육/강의',
-  '미분류',
-];
+const Container = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+`;
+const EditorContainer = styled.div`
+  width: 55vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+const VideoContainer = styled.div`
+  width: 35vw;
+`;
+const Box = styled.div`
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  border: 1.2px solid #dfdcfb;
+  display: flex;
+`;
+const CategorySelect = styled(Box)`
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+`;
+const CategorySelectDesc = styled.p``;
+const CategorySelectIcon = styled.span`
+  font-size: 1.3rem;
+  color: #9e96e3;
+`;
+const CategoryModalContainer = styled(Box)`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: #fff;
+  position: relative;
+  top: -0.9rem;
+  padding: 1rem;
+  box-sizing: border-box;
+`;
+const UrlInputContainer = styled(Box)`
+  justify-content: space-between;
+  padding: 0;
+  overflow: hidden;
+`;
+const UrlInputText = styled.input`
+  width: 80%;
+  padding: 1.4rem;
+`;
+const UrlInputBackspaceLabel = styled.label`
+  width: 1.7rem;
+  height: 1.7rem;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #9e96e3;
+  cursor: pointer;
+  svg {
+    font-size: 1.5rem;
+  }
+`;
+const UrlInputBackspace = styled.input`
+  background-color: transparent;
+  display: none;
+`;
+
+const RecommendPost = styled.div`
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+  &:hover img {
+    transform: scale(110%);
+    transition: 0.3s;
+  }
+  &:not(hover) img {
+    transform: scale(100%);
+    transition: 0.3s;
+  }
+`;
+
+const RecommendImgWrapper = styled.div`
+  width: 20rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  width: 45%;
+`;
+const RecommendImg = styled.img`
+  width: 100%;
+`;
+const RecommendInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  justify-content: center;
+  width: 55%;
+  color: #5a5a5a;
+  line-height: 1.3;
+  font-size: 0.9rem;
+`;
+const RecommendVideoTitle = styled.p`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+`;
+const RecommendUser = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  svg {
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #d9d9d9;
+    border-radius: 100%;
+    padding: 0.1rem;
+  }
+`;
+const RecommendDate = styled.p`
+  color: #909090;
+  font-size: 0.7rem;
+`;
+
+const ReviewInputContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+const TitleInput = styled.input`
+  padding: 1rem 0;
+`;
+const DescInput = styled.textarea`
+  height: 10rem;
+  &::placeholder{
+    font-size: 0.9rem;
+  }
+`;
+const SubmitButton = styled.input`
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: #fff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-size: 0.8rem;
+  &:hover {
+    filter: grayscale(30%);
+    transition: 0.2s;
+  }
+`;
+
+const Star = styled.span`
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  background-color: ${({ selected }) => (selected ? "#f90" : "#ddd")};
+  margin: 0.125rem; // 2/16
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  cursor: pointer;
+`;
+const StarWrapper = styled.div`
+  margin: 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Upload = () => {
-  const [category, setCategory] = useState(null);
-  const [videoLink, setVideoLink] = useState('');
-  const [title, setTitle] = useState('');
-  const [review, setReview] = useState('');
   const [rating, setRating] = useState(0);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoInfo, setVideoInfo] = useState({});
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [category, setCategory] = useState([]);
+  const [reviewInfo, setReviewInfo] = useState({});
+  const navigate = useNavigate()
 
-  const handleSubmit = () => {
-    const data = {
-      category,
-      videoLink,
-      title,
-      review,
-      rating,
-    };
+  const apiClient = axios.create({
+    baseURL: "https://youtube.googleapis.com/youtube/v3",
+    params: { key: process.env.REACT_APP_YOUTUBE_API_KEY },
+  });
 
-    axios
-      .post('서버 URL', JSON.stringify(data), {
-        headers: {
-          'Content-Type': 'application/json',
+  const getVideoInfo = async (videoId) => {
+    try {
+      const response = await apiClient.get("videos", {
+        params: {
+          part: "snippet",
+          id: videoId,
         },
-      })
-      .then((response) => {
-        // Handle response
-      })
-      .catch((error) => {
-        // Handle error
       });
+      setVideoInfo(response.data.items[0].snippet);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  useEffect(() => {
+    if (videoInfo.title !== undefined) {
+      setReviewInfo((prev) => {
+        return {
+          ...prev,
+          videoUrl,
+          channelName: videoInfo.channelTitle,
+          videoTitle: videoInfo.title,
+          videoThumbnail: videoInfo.thumbnails.standard.url,
+          publishedAt: videoInfo.publishedAt,
+        };
+      });
+    }
+  }, [videoInfo]);
+
+  const handleUrlCheck = () => {
+    setVideoInfo({});
+    let regex = new RegExp(
+      "(youtu.*be.*)/(watch?v=|embed/|v|shorts|)(.*?((?=[&#?])|$))"
+    );
+    let videoId = "";
+    if (regex.test(videoUrl)) {
+      if (videoUrl.indexOf("/watch?v=") > 0) {
+        videoId = videoUrl.split("/watch?v=")[1];
+      } else if (videoUrl.indexOf("youtu.be/")) {
+        videoId = videoUrl.split("youtu.be/")[1];
+      }
+
+      getVideoInfo(videoId);
+    } else {
+      // console.log("형식에 어긋납니다.");
+    }
+  };
+  useEffect(() => {
+    if (category.length === 1) {
+      setReviewInfo((prev) => {
+        return {
+          ...prev,
+          category: category[0],
+        };
+      });
+      setCategoryModalOpen(false);
+    }
+  }, [category]);
+  useEffect(() => {
+    setReviewInfo((prev) => {
+      return {
+        ...prev,
+        rate: rating,
+      };
+    });
+  }, [rating]);
+
+  const handleSubmit = () =>{
+    if (
+      reviewInfo.videoTitle.length > 0  &&
+      reviewInfo.category.length > 0 &&
+      reviewInfo.desc.length > 0 &&
+      reviewInfo.rate > 0
+    ){
+      alert("업로드되었습니다")
+      navigate("/review/1")
+    } else {
+      console.log(reviewInfo)
+      alert("모두 채워주세요")
+    }
+  }
   return (
-    <div>
-      <h1
-        style={{
-          marginLeft: '10rem',
-          fontSize: '1.3rem',
-        }}
-      >
-        Write Review
-      </h1>
-      <Container>
-        <h1 style={{ margin: '1rem', fontSize: '1.1rem' }}>
-          The category of writing
-        </h1>
-        <CategoryWrapper>
-          {/* 첫 번째 줄에는 7개의 카테고리 버튼을 배치 */}
-          <CategoryRow>
-            {categories.slice(0, 7).map((cat, index) => (
-              <CategoryButton
-                key={index}
-                index={index}
-                isSelected={category === cat}
-                onClick={() => {
-                  setCategory((currentCategory) =>
-                    currentCategory === cat ? '' : cat
-                  );
-                  console.log(`선택한 카테고리: ${category}`);
-                }}
-              >
-                {cat}
-              </CategoryButton>
-            ))}
-          </CategoryRow>
-
-          {/* 두 번째 줄에는 5개의 카테고리 버튼을 배치 */}
-          <CategoryRow>
-            {categories.slice(7, 12).map((cat, index) => (
-              <CategoryButton
-                key={index + 7} // 기존 인덱스에 7을 더하여 키 충돌을 방지
-                index={index + 7}
-                isSelected={category === cat}
-                onClick={() => {
-                  setCategory((currentCategory) =>
-                    currentCategory === cat ? '' : cat
-                  );
-                  console.log(`선택한 카테고리: ${category}`);
-                }}
-              >
-                {cat}
-              </CategoryButton>
-            ))}
-          </CategoryRow>
-
-          {/* 세 번째 줄에는 8개의 카테고리 버튼을 배치 */}
-          <CategoryRow>
-            {categories.slice(12, 20).map((cat, index) => (
-              <CategoryButton
-                key={index + 12} // 기존 인덱스에 12를 더하여 키 충돌을 방지
-                index={index + 12}
-                isSelected={category === cat}
-                onClick={() => {
-                  setCategory((currentCategory) =>
-                    currentCategory === cat ? '' : cat
-                  );
-                  console.log(`선택한 카테고리: ${category}`);
-                }}
-              >
-                {cat}
-              </CategoryButton>
-            ))}
-          </CategoryRow>
-        </CategoryWrapper>
-
-        <TextWrapper>
-          <Input
-            placeholder="유튜브 동영상 링크"
-            onChange={(e) => setVideoLink(e.target.value)}
-            style={{
-              marginBottom: '3rem',
-              textAlign: 'center',
-            }}
-          />
-          {videoLink && (
-            <Thumbnail
-              src={`https://img.youtube.com/vi/${
-                videoLink.split('v=')[1]
-              }/0.jpg`}
+    <Container>
+      <EditorContainer>
+        <CategorySelect
+          onClick={() => {
+            setCategory([]);
+            setCategoryModalOpen((prev) => {
+              return !prev;
+            });
+          }}
+        >
+          <CategorySelectDesc>
+            {category.length === 1
+              ? CategoryGridData.map((item) => {
+                  let result = "";
+                  if (item.id === category[0]) {
+                    result = item.name;
+                  }
+                  return result;
+                })
+              : "카테고리 선택"}
+          </CategorySelectDesc>
+          <CategorySelectIcon>
+            <RxTriangleDown />
+          </CategorySelectIcon>
+        </CategorySelect>
+        {categoryModalOpen && (
+          <CategoryModalContainer>
+            <CategoryGrid
+              setCategory={setCategory}
+              category={category}
+              max={1}
             />
-          )}
-          <TitleInput
-            placeholder="Write a title for the content"
-            onChange={(e) => setTitle(e.target.value)}
-            style={{
-              fontSize: '1.5rem',
-              marginBottom: '2rem',
+          </CategoryModalContainer>
+        )}
+        <UrlInputContainer>
+          <UrlInputText
+            type="text"
+            placeholder="동영상 링크를 입력해주세요"
+            value={videoUrl}
+            onChange={(e) => {
+              setVideoUrl(e.target.value);
+            }}
+            onKeyUp={(e) => {
+              handleUrlCheck();
             }}
           />
-          <TextArea
-            placeholder="리뷰를 작성하세요."
-            onChange={(e) => setReview(e.target.value)}
+          {videoUrl.length > 0 && (
+            <UrlInputBackspaceLabel>
+              <UrlInputBackspace
+                type="button"
+                onClick={() => {
+                  setVideoUrl("");
+                  setVideoInfo({});
+                }}
+              />
+              <PiBackspace />
+            </UrlInputBackspaceLabel>
+          )}
+        </UrlInputContainer>
+        <ReviewInputContainer>
+          <TitleInput
+            placeholder="(선택) 제목을 입력해주세요"
+            value={reviewInfo.title}
+            onChange={(e) => {
+              setReviewInfo((prev) => {
+                return { ...prev, title: e.target.value };
+              });
+            }}
           />
-        </TextWrapper>
+          <DescInput
+            placeholder="내용을 입력해주세요"
+            value={reviewInfo.desc}
+            onChange={(e) => {
+              setReviewInfo((prev) => {
+                return { ...prev, desc: e.target.value };
+              });
+            }}
+          />
+        </ReviewInputContainer>
         <StarWrapper>
           <div>
             {[...Array(5)].map((_, i) => (
@@ -173,150 +381,30 @@ const Upload = () => {
               />
             ))}
           </div>
-
-          <div style={{ marginTop: '10px' }}>
-            <Button onClick={handleSubmit}>올리기</Button>
-          </div>
         </StarWrapper>
-      </Container>
-    </div>
+        <SubmitButton type="submit" value="업로드" onClick={()=>{handleSubmit()}} />
+      </EditorContainer>
+      <VideoContainer>
+        {videoInfo.title !== undefined && (
+          <RecommendPost>
+            <RecommendImgWrapper>
+              <RecommendImg src={videoInfo.thumbnails.standard.url} />
+            </RecommendImgWrapper>
+            <RecommendInfo>
+              <RecommendVideoTitle>{videoInfo.title}</RecommendVideoTitle>
+              <RecommendUser>
+                <IoPerson />
+                {videoInfo.channelTitle}
+              </RecommendUser>
+              <RecommendDate>
+                {videoInfo.publishedAt.slice(0, 10).replaceAll("-", ".")}
+              </RecommendDate>
+            </RecommendInfo>
+          </RecommendPost>
+        )}
+      </VideoContainer>
+    </Container>
   );
 };
-
-const Container = styled.div`
-  max-width: 60rem;
-  margin: 0 auto;
-  padding: 1.25rem;
-`;
-
-const CategoryWrapper = styled.div`
-  margin: 3rem 3rem;
-  display: flex-box;
-  flex-wrap: wrap;
-  justify-content: center;
-`;
-
-const CategoryButton = styled.button`
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  margin: 0.3125rem 0.5rem;
-  border: 1px solid ${({ isSelected }) => (isSelected ? '#33277c' : 'black')}; // 수정된 부분
-  background-color: ${({ isSelected }) =>
-    isSelected ? '#33277c' : 'transparent'};
-  color: ${({ isSelected }) => (isSelected ? 'white' : 'black')}; // 수정된 부분
-  border-radius: 1rem;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #33277c;
-    color: white;
-  }
-`;
-
-const CategoryRow = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 1rem;
-`;
-
-const Input = styled.input`
-  padding: 0.625rem;
-  margin: 3rem 0 0 0;
-  width: 80%;
-  outline: none;
-  border: none; // 모든 테두리 제거
-  border-bottom: 0.1rem solid #ccc; // 하단만 테두리 설정
-  border-radius: 0;
-  font-size: 0.875rem;
-  background-color: rgba(0, 0, 0, 0);
-  font-family: 'NanumSquareRoundEB';
-  font-weight: 100;
-`;
-
-const TitleInput = styled(Input)`
-  &::placeholder {
-    font-size: 1.2rem;
-  }
-`;
-
-const TextWrapper = styled.div`
-  margin: 3rem 3rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-`;
-
-const TextArea = styled.textarea`
-  padding: 0.625rem; // 10/16
-  width: 80%;
-  outline: none;
-  margin: 0.625rem 0; // 10/16
-  min-height: 20rem; // 150/16
-  border: none;
-  border-radius: 0.3125rem; // 5/16
-  font-size: 0.875rem; // 14/16
-  background-color: rgba(0, 0, 0, 0);
-  font-family: 'NanumSquareRoundEB';
-  font-weight: 100;
-`;
-
-const Thumbnail = styled.img`
-  width: 50%;
-  border-radius: 1rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    display: block;
-    padding-bottom: 56.25%; /* 9/16 * 100% = 56.25% */
-  }
-`;
-
-const Star = styled.span`
-  display: inline-block;
-  width: 3rem;
-  height: 3rem;
-  background-color: ${({ selected }) => (selected ? 'gold' : '#ddd')};
-  margin: 0.125rem; // 2/16
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  cursor: pointer;
-`;
-
-const Button = styled.button`
-  padding: 0.625rem 1.25rem; // 10/16, 20/16
-  background-color: #33277c;
-  color: white;
-  border: none;
-  border-radius: 0.3125rem; // 5/16
-  transition: background-color 0.3s;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const StarWrapper = styled.div`
-  margin: 3rem 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 export default Upload;

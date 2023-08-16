@@ -3,8 +3,9 @@ import { SocialLoginButton } from "../Login";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { InterestData } from "../../data/InterestData";
+import { CategoryGridData } from "../../data/CategoryGridData";
 import { useEffect, useState } from "react";
+import CategoryGrid from "../../components/CategoryGrid";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -44,36 +45,7 @@ const Desc = styled.p`
   margin-bottom: 1rem;
 `;
 
-const InterestGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 1rem;
-  row-gap: 1rem;
-`;
-const InterestItem = styled.button`
-  width: 5rem;
-  height: 5rem;
-  display: flex;
-  background-color: #faf8ff;
-  border-radius: 0.5rem;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.8rem;
-  font-weight: bold;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: transform 0.3s;
-  &.selected {
-    border: 1.2px solid ${({ theme }) => theme.colors.primary};
-    transform: scale(110%);
-  }
-`;
-const Icon = styled.span``;
-const ItemName = styled.p`
-  text-align: center;
-`;
+
 const NextButton = styled(SocialLoginButton)`
   width: 15rem;
   padding: 0.5rem 1rem;
@@ -84,48 +56,10 @@ const NextButton = styled(SocialLoginButton)`
 
 export default function SignUpInterest() {
   const navigate = useNavigate();
-  const [interestResult, setInterestResult] = useState([]);
-  const handleSelect = (e) => {
-    if (e.target.tagName !== "BUTTON") {
-      const buttonTarget = e.target.parentElement;
-      const buttonClassList = Array.from(buttonTarget.classList);
-      if (buttonClassList.indexOf("selected") > 0) {
-        buttonTarget.classList.remove("selected");
-        setInterestResult((prev) => {
-          return prev.filter((item) => item !== buttonTarget.id);
-        });
-      } else {
-        if (interestResult.length < 3) {
-          buttonTarget.classList.add("selected");
-          setInterestResult((prev) => {
-            return [...prev, buttonTarget.id];
-          });
-        } else {
-          alert("최대 3가지의 관심사를 선택할 수 있습니다");
-        }
-      }
-    } else {
-      const targetClassList = Array.from(e.target.classList);
-      if (targetClassList.indexOf("selected") > 0) {
-        e.target.classList.remove("selected");
-        setInterestResult((prev) => {
-          return prev.filter((item) => item !== e.target.id);
-        });
-      } else {
-        if (interestResult.length < 3) {
-          e.target.classList.add("selected");
-          setInterestResult((prev) => {
-            return [...prev, e.target.id];
-          });
-        } else {
-          alert("최대 3가지의 관심사를 선택할 수 있습니다");
-        }
-      }
-    }
-  };
+  const [category, setCategory] = useState([]);
 
   const handleSignUp = () => {
-    if (interestResult.length === 0) {
+    if (category.length === 0) {
       alert("1가지 이상의 관심사를 선택해주세요");
     } else {
       navigate("/sign-up/success");
@@ -141,21 +75,7 @@ export default function SignUpInterest() {
         <Container>
           <Title>관심사</Title>
           <Desc>1~3가지의 관심사를 선택해주세요</Desc>
-          <InterestGrid>
-            {InterestData.map((item) => {
-              return (
-                <InterestItem
-                  id={item.id}
-                  onClick={(e) => {
-                    handleSelect(e);
-                  }}
-                >
-                  <Icon>{item.icon}</Icon>
-                  <ItemName>{item.name}</ItemName>
-                </InterestItem>
-              );
-            })}
-          </InterestGrid>
+          <CategoryGrid setCategory={setCategory} category={category} max={3}/>
           <NextButton
             onClick={() => {
               handleSignUp();

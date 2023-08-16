@@ -1,4 +1,4 @@
-export const InterestData = [
+export const CategoryGridData = [
     {name: "라이프 스타일", id: "lifeStyle", icon: "🏠"},
     {name: "음악/댄스", id: "music&dance", icon: "🎵"},
     {name: "뷰티/패션", id: "beauty&fashion", icon: "👗"},
