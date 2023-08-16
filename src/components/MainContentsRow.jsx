@@ -7,7 +7,7 @@ import { FaHeart } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Reviews } from "../data/Reviews";
-import emptyImage from "../static/empty.png"
+import emptyImage from "../static/empty.png";
 
 const Container = styled.div`
   display: flex;
@@ -262,47 +262,46 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
         UserLikesCategoryList.map((item) => {
           return (
             <>
-            <ContentCategoryList>
-              <ContentCategoryItem
-                className={item.name === "전체" && "active"}
-                onClick={(e) => {
-                  handleCategoryClick(e);
-                }}
-              >
-                {item.name}
-              </ContentCategoryItem>
-            </ContentCategoryList>
-            <ReviewRow>
-            <CarouselButtonContainer>
-              <CarouselPreviousButton
-                onClick={() => {
-                  setInitialAnimation(true);
-                  setRankBack(true);
-                  setRankVisible((prev) => (prev === 0 ? 0 : prev - 4));
-                }}
-              >
-                <FiChevronLeft />
-              </CarouselPreviousButton>
-              <CarouselNextButton
-                onClick={() => {
-                  setInitialAnimation(true);
-                  setRankBack(false);
-                  setRankVisible((prev) =>
-                    prev + 4 >= Reviews.length ? prev : prev + 4
-                  );
-                }}
-              >
-                <FiChevronRight />
-              </CarouselNextButton>
-            </CarouselButtonContainer>
-            {Reviews.map((item, index) => {
-              return (index >= rankVisible) & (index <= rankVisible + 3)
-                ? ReviewContents({ item, index })
-                : null;
-            })}
-          </ReviewRow>
+              <ContentCategoryList>
+                <ContentCategoryItem
+                  className={item.name === "전체" && "active"}
+                  onClick={(e) => {
+                    handleCategoryClick(e);
+                  }}
+                >
+                  {item.name}
+                </ContentCategoryItem>
+              </ContentCategoryList>
+              <ReviewRow>
+                <CarouselButtonContainer>
+                  <CarouselPreviousButton
+                    onClick={() => {
+                      setInitialAnimation(true);
+                      setRankBack(true);
+                      setRankVisible((prev) => (prev === 0 ? 0 : prev - 4));
+                    }}
+                  >
+                    <FiChevronLeft />
+                  </CarouselPreviousButton>
+                  <CarouselNextButton
+                    onClick={() => {
+                      setInitialAnimation(true);
+                      setRankBack(false);
+                      setRankVisible((prev) =>
+                        prev + 4 >= Reviews.length ? prev : prev + 4
+                      );
+                    }}
+                  >
+                    <FiChevronRight />
+                  </CarouselNextButton>
+                </CarouselButtonContainer>
+                {Reviews.map((item, index) => {
+                  return (index >= rankVisible) & (index <= rankVisible + 3)
+                    ? ReviewContents({ item, index })
+                    : null;
+                })}
+              </ReviewRow>
             </>
-            
           );
         })
       ) : (

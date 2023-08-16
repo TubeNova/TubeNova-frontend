@@ -47,6 +47,9 @@ const NavCategoryItem = styled(Link)`
   color: #949494;
   font-weight: bold;
   font-size: 1rem;
+  &.active {
+    color: ${({ theme }) => theme.colors.primary};
+  }
   &:hover {
     color: ${(props) => props.theme.colors.primary};
     transition: 0.3s ease-in-out;
@@ -168,12 +171,26 @@ const ModalContainer = styled.div`
   background-color: #fff;
 `;
 
+const MoreCategories = styled.ul`
+  position: fixed;
+  top: 50px;
+  left: 0;
+  display: grid;
+  row-gap: 1rem;
+  grid-template-columns: repeat(8, 1fr);
+  width: 100%;
+  background-color: #fff;
+  padding: 1em 2rem 1rem 2rem;
+  box-sizing: border-box;
+  box-shadow: 0px 0.5px 5px 0px rgba(0, 0, 0, 0.1);
+`;
+
 export default function Nav() {
-  const [userTabActive, setUserTabActice] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginStateAtom);
   const [modalOpen, setModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [userToolModal, setUserToolModal] = useState(false);
+  const [showMoreCategories, setShowMoreCategories] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     if (!updateModalOpen) {
@@ -194,11 +211,52 @@ export default function Nav() {
           </NavTitle>
           <NavCategoryList>
             {NavCategoryData.map((item) => {
-              return (
-                <NavCategoryItem to={item.url}>{item.name}</NavCategoryItem>
-              );
+              if (item.name === "더보기") {
+                return (
+                  <NavCategoryItem
+                    className={showMoreCategories ? "active" : null}
+                    to={item.url}
+                    onClick={(e) => {
+                      setShowMoreCategories((prev) => {
+                        return !prev;
+                      });
+                    }}
+                  >
+                    {item.name}
+                  </NavCategoryItem>
+                );
+              } else {
+                return (
+                  <NavCategoryItem
+                    to={item.url}
+                    onClick={() => {
+                      setShowMoreCategories(false);
+                    }}
+                  >
+                    {item.name}
+                  </NavCategoryItem>
+                );
+              }
             })}
           </NavCategoryList>
+          {showMoreCategories && (
+            <MoreCategories>
+              {NavCategoryData[NavCategoryData.length - 1].etcCategory.map(
+                (item) => {
+                  return (
+                    <NavCategoryItem
+                      to={item.url}
+                      onClick={() => {
+                        setShowMoreCategories(false);
+                      }}
+                    >
+                      {item.name}
+                    </NavCategoryItem>
+                  );
+                }
+              )}
+            </MoreCategories>
+          )}
         </NavLeftBox>
         <NavRightBox>
           <NavSearchBox>
@@ -248,7 +306,7 @@ export default function Nav() {
           <Tool
             onClick={() => {
               navigate("/mypage");
-              setUserToolModal(false)
+              setUserToolModal(false);
             }}
           >
             <ToolIcon>
@@ -259,7 +317,7 @@ export default function Nav() {
           <Tool
             onClick={() => {
               navigate("/upload");
-              setUserToolModal(false)
+              setUserToolModal(false);
             }}
           >
             <ToolIcon>
@@ -272,7 +330,7 @@ export default function Nav() {
               setIsLoggedIn((prev) => {
                 return { ...prev, state: false };
               });
-              setUserToolModal(false)
+              setUserToolModal(false);
             }}
           >
             <ToolIcon>

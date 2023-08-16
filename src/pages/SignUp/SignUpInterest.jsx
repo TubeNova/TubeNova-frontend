@@ -65,6 +65,7 @@ export default function SignUpInterest() {
       navigate("/sign-up/success");
     }
   };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
