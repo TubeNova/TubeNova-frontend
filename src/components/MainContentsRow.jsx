@@ -7,6 +7,7 @@ import { FaHeart } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Reviews } from "../data/Reviews";
+import emptyImage from "../static/empty.png"
 
 const Container = styled.div`
   display: flex;
@@ -103,6 +104,7 @@ const ReviewThumbnailContainer = styled.div`
   overflow: hidden;
   width: 100%;
   flex-direction: column;
+  background-image: url(${emptyImage});
 `;
 const ReviewThumbnail = styled.img`
   width: 100%;
