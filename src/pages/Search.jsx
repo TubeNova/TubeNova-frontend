@@ -39,7 +39,7 @@ const Tab = styled.nav`
 const ReviewResultList = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   padding: 15px 5px;
 `;
 const ReviewResultItem = styled.li`
@@ -61,10 +61,18 @@ const ReviewImgContainer = styled.div`
   height: 180px;
   border-radius: 10px;
   overflow: hidden;
+  ${({ theme }) => theme.media.mobile} {
+    width: 120px;
+    height: 90px;
+  }
 `;
 const ReviewThumbnail = styled.img`
   width: 240px;
   height: 180px;
+  ${({ theme }) => theme.media.mobile} {
+    width: 120px;
+    height: 90px;
+  }
 `;
 const RevieVideoTitle = styled.p`
   width: 240px;
@@ -78,6 +86,10 @@ const RevieVideoTitle = styled.p`
   background-color: #f1f1f1d8;
   padding: 5px;
   border-radius: 0 0 10px 10px;
+  ${({ theme }) => theme.media.mobile} {
+   display: none;
+
+  }
 `;
 const ReviewTextContainer = styled.div`
   display: flex;
@@ -85,12 +97,19 @@ const ReviewTextContainer = styled.div`
   width: calc(100% - 40vw);
   gap: 10px;
   justify-content: space-around;
+  ${({ theme }) => theme.media.mobile} {
+    gap: 5px;
+    width: 100%;
+  }
 `;
 const Header = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  ${({ theme }) => theme.media.mobile} {
+    gap: 3px;
+  }
+`;
 const ReviewUserContainer = styled.div`
   display: flex;
   gap: 4px;
@@ -106,14 +125,29 @@ const UserIcon = styled.span`
   align-items: center;
   display: flex;
   justify-content: center;
+  ${({ theme }) => theme.media.mobile} {
+    display: none;
+  }
 `;
 const NameAndRate = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
+  ${({ theme }) => theme.media.mobile} {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
 `;
 const UserName = styled.span`
   font-size: 12px;
+  ${({ theme }) => theme.media.mobile} {
+    background-color: #eee;
+    padding: 1px 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 const Rate = styled.span`
   color: #f90;
@@ -126,20 +160,26 @@ const Desc = styled.p`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 12px;
+  }
 `;
 const Footer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  align-items: center;
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 10px;
+  }
 `;
 const Likes = styled.span`
-    display: flex;
-    align-items: center;
-    svg {
-        color: #d35757;
-        margin-right: 2px;
-    }
+  display: flex;
+  align-items: center;
+  svg {
+    color: #d35757;
+    margin-right: 2px;
+  }
 `;
 const Date = styled.span``;
 export default function Search() {
@@ -173,29 +213,29 @@ export default function Search() {
                 </ReviewImgContainer>
                 <ReviewTextContainer>
                   <Header>
-                  <ReviewUserContainer>
-                    <UserIcon>
-                      <IoPerson />
-                    </UserIcon>
-                    <NameAndRate>
-                      <UserName>{item.userName}</UserName>
-                      <Rate>
-                        {(function () {
-                          const stars = [];
-                          for (let i = 0; i < item.rate; i++) {
-                            stars.push(<AiFillStar />);
-                          }
-                          for (let i = 0; i < 5 - item.rate; i++) {
-                            stars.push(<AiOutlineStar />);
-                          }
-                          return stars;
-                        })()}
-                      </Rate>
-                    </NameAndRate>
-                  </ReviewUserContainer>
-                  <DescContainer>
-                    <Desc>{item.desc}</Desc>
-                  </DescContainer>
+                    <ReviewUserContainer>
+                      <UserIcon>
+                        <IoPerson />
+                      </UserIcon>
+                      <NameAndRate>
+                        <UserName>{item.userName}</UserName>
+                        <Rate>
+                          {(function () {
+                            const stars = [];
+                            for (let i = 0; i < item.rate; i++) {
+                              stars.push(<AiFillStar />);
+                            }
+                            for (let i = 0; i < 5 - item.rate; i++) {
+                              stars.push(<AiOutlineStar />);
+                            }
+                            return stars;
+                          })()}
+                        </Rate>
+                      </NameAndRate>
+                    </ReviewUserContainer>
+                    <DescContainer>
+                      <Desc>{item.desc}</Desc>
+                    </DescContainer>
                   </Header>
                   <Footer>
                     <Date>{item.date}</Date>
