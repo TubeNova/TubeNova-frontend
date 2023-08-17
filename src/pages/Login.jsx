@@ -74,6 +74,7 @@ const SignUpButton = styled.button`
 export default function Login({ setUpdateModalOpen }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginStateAtom)
+
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     pw: "",
