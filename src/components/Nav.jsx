@@ -67,7 +67,7 @@ const NavRightBox = styled.div`
     gap: 1rem;
   }
 `;
-const NavSearchBox = styled.div`
+const NavSearchBox = styled.form`
   border-radius: 5.3rem;
   border: 1.3px #c3c3c3 solid;
   display: flex;
@@ -85,6 +85,7 @@ const NavSearchInput = styled.input.attrs({ type: "text" })`
   border: 0;
   padding: 0.5rem 0;
   width: 13rem;
+  font-size: 1rem;
   &:focus {
     outline: 0;
   }
@@ -216,6 +217,7 @@ export default function Nav() {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [userToolModal, setUserToolModal] = useState(false);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("")
   const navigate = useNavigate();
   useEffect(() => {
     if (!updateModalOpen) {
@@ -223,6 +225,11 @@ export default function Nav() {
     }
   }, [updateModalOpen]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/search?keyword=${searchKeyword}`)
+    setSearchKeyword("")
+  }
   return (
     <>
       <NavContainer>
@@ -284,8 +291,8 @@ export default function Nav() {
           )}
         </NavLeftBox>
         <NavRightBox>
-          <NavSearchBox>
-            <NavSearchInput placeholder="검색어를 입력해주세요" />
+          <NavSearchBox onSubmit={(e)=>{handleSearch(e)}}>
+            <NavSearchInput value={searchKeyword} onChange={(e)=>{setSearchKeyword(e.target.value)}} placeholder="검색어를 입력해주세요" />
             <NavSearchButton>
               <BiSearch />
             </NavSearchButton>
