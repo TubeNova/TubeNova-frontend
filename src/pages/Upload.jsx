@@ -8,6 +8,8 @@ import { IoPerson } from "react-icons/io5";
 import CategoryGrid from "../components/CategoryGrid";
 import { CategoryGridData } from "../data/CategoryGridData";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { LoginStateAtom } from "../atom";
 
 const Container = styled.div`
   display: flex;
@@ -197,7 +199,12 @@ const Upload = () => {
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [category, setCategory] = useState([]);
   const [reviewInfo, setReviewInfo] = useState({});
+  const { accessToken } = useRecoilValue(LoginStateAtom);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    console.log(accessToken)
+  },[])
 
   const apiClient = axios.create({
     baseURL: "https://youtube.googleapis.com/youtube/v3",
@@ -281,12 +288,21 @@ const Upload = () => {
       try {
         axios({
           method: "post",
-          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/auth/signup`,
+          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/posts`,
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
           },
           data: {
-           
+            videoImageUrl: reviewInfo.videoThumbnail,
+            videoTitle: reviewInfo.videoTitle,
+            channel: reviewInfo.channelName,
+            videoDate: reviewInfo.publishedAt,
+            title: reviewInfo.title,
+            linkUrl: reviewInfo.videoUrl,
+            contents: reviewInfo.desc,
+            rating: reviewInfo.rate,
+            category: reviewInfo.category,
           },
         }).then((response) => {
           console.log(response);

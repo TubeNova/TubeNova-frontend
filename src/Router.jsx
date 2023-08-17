@@ -21,6 +21,7 @@ import LikeReview from './pages/MyPage/LikeReview';
 
 import Rank from './pages/Rank';
 import ReviewDetail from './pages/ReviewDetail';
+import Search from './pages/Search';
 const Wrapper = styled.div`
   margin-top: 60px;
   width: 100%;
@@ -54,18 +55,19 @@ export default function Router() {
       <Nav />
       <Wrapper>
         <Routes>
-          <Route path={`/`} element={<Main />} />
-          <Route path={`/sign-up`}>
-            <Route path={`/sign-up`} element={<SignUp />} />
-            <Route path={`/sign-up/email`} element={<SignUpEmail />} />
-            <Route path={`/sign-up/interest`} element={<SignUpInterest />} />
-            <Route path={`/sign-up/success`} element={<SignUpSuccess />} />
+          <Route path='/' element={<Main />} />
+          <Route path='/sign-up'>
+            <Route path='/sign-up' element={<SignUp />} />
+            <Route path='/sign-up/email' element={<SignUpEmail />} />
+            <Route path='/sign-up/interest' element={<SignUpInterest />} />
+            <Route path='/sign-up/success' element={<SignUpSuccess />} />
           </Route>
-          <Route path={`review/:id`} element={<ReviewDetail/>}>
+          <Route path='review/:id' element={<ReviewDetail/>}>
 
           </Route>
-          <Route path={`/upload`} element={<Upload />} />
-          <Route path={`/rank`} element={<Rank />} />
+          <Route path='/upload' element={<Upload />} />
+          <Route path='/rank' element={<Rank />} />
+          <Route path='/search' element={<Search/>} />
           {/* 마이페이지 라우터 */}
           <Route path="/mypage" element={<MyWriting />}>
             <Route index element={<div />} />{' '}

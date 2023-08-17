@@ -116,10 +116,10 @@ html {
                 font-size: 16px;
             }
             ${({ theme }) => theme.media.tablet} {
-                font-size: 10px;
+                font-size: 13px;
             }
             ${({ theme }) => theme.media.laptop1440} {
-                font-size: 11px;
+                font-size: 13px;
             }
             ${({ theme }) => theme.media.laptop1680} {
                 font-size: 13px;
