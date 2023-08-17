@@ -5,7 +5,7 @@ import { IoPerson } from "react-icons/io5";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Reviews } from "../data/Reviews";
 import emptyImage from "../static/empty.png";
 
@@ -24,6 +24,9 @@ const ContentRowHeader = styled.div`
 const ContentRowTitle = styled.h1`
   font-weight: bold;
   font-size: 1.3rem;
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 1.1rem;
+  }
 `;
 const ContentRowMore = styled(Link)`
   font-size: 0.7rem;
@@ -55,6 +58,12 @@ const CarouselButtonContainer = styled.div`
   position: absolute;
   left: 1rem;
   width: calc(100% - 2rem);
+
+  ${({ theme }) => theme.media.mobile} {
+    left: 0.2rem;
+    width: calc(100% - 0.4rem);
+    margin-top: 3rem;
+  }
 `;
 
 const CarouselPreviousButton = styled.button`
@@ -80,6 +89,9 @@ const ReviewRow = styled.div`
   display: flex;
   overflow: hidden;
   gap: 1.2rem;
+  ${({ theme }) => theme.media.mobile} {
+    gap: 0.8rem;
+  }
 `;
 
 const ReviewItem = styled.div`
@@ -96,6 +108,9 @@ const ReviewItem = styled.div`
   &:not(hover) img {
     transform: scale(100%);
     transition: 0.3s;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    width: calc((100% - 0.8rem) / 2);
   }
 `;
 const ReviewThumbnailContainer = styled.div`
@@ -138,6 +153,11 @@ const ReviewUser = styled.div`
 `;
 const ReviewRate = styled.div`
   color: #f90;
+  display: flex;
+  align-items: center;
+  ${({theme}) => theme.media.mobile} {
+    font-size: 0.8rem;
+  }
 `;
 const ReviewDesc = styled.p`
   font-size: 0.8rem;
@@ -170,11 +190,20 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
   const [initialAnimation, setInitialAnimation] = useState(false);
   const [rankVisible, setRankVisible] = useState(0);
   const [rankBack, setRankBack] = useState(false);
+  const [visibleNumber, setVisibleNumber] = useState(4);
   const navigate = useNavigate();
+  const windowSize = useWindowSize();
+  useEffect(() => {
+    if (windowSize.width <= 768) {
+      setVisibleNumber(2);
+    } else {
+      setVisibleNumber(4);
+    }
+  }, [windowSize]);
 
   useEffect(() => {
     rankVisible === 0 && setRankBack(false);
-    rankVisible + 4 >= Reviews.length && setRankBack(true);
+    rankVisible + visibleNumber >= Reviews.length && setRankBack(true);
   }, [rankVisible]);
 
   const BasicCategoryList = [
@@ -278,7 +307,9 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
                     onClick={() => {
                       setInitialAnimation(true);
                       setRankBack(true);
-                      setRankVisible((prev) => (prev === 0 ? 0 : prev - 4));
+                      setRankVisible((prev) =>
+                        prev === 0 ? 0 : prev - visibleNumber
+                      );
                     }}
                   >
                     <FiChevronLeft />
@@ -288,7 +319,7 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
                       setInitialAnimation(true);
                       setRankBack(false);
                       setRankVisible((prev) =>
-                        prev + 4 >= Reviews.length ? prev : prev + 4
+                        prev + 4 >= Reviews.length ? prev : prev + visibleNumber
                       );
                     }}
                   >
@@ -296,7 +327,8 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
                   </CarouselNextButton>
                 </CarouselButtonContainer>
                 {Reviews.map((item, index) => {
-                  return (index >= rankVisible) & (index <= rankVisible + 3)
+                  return (index >= rankVisible) &
+                    (index <= rankVisible + visibleNumber - 1)
                     ? ReviewContents({ item, index })
                     : null;
                 })}
@@ -327,7 +359,9 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
                 onClick={() => {
                   setInitialAnimation(true);
                   setRankBack(true);
-                  setRankVisible((prev) => (prev === 0 ? 0 : prev - 4));
+                  setRankVisible((prev) =>
+                    prev === 0 ? 0 : prev - visibleNumber
+                  );
                 }}
               >
                 <FiChevronLeft />
@@ -337,7 +371,7 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
                   setInitialAnimation(true);
                   setRankBack(false);
                   setRankVisible((prev) =>
-                    prev + 4 >= Reviews.length ? prev : prev + 4
+                    prev + 4 >= Reviews.length ? prev : prev + visibleNumber
                   );
                 }}
               >
@@ -345,7 +379,8 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
               </CarouselNextButton>
             </CarouselButtonContainer>
             {Reviews.map((item, index) => {
-              return (index >= rankVisible) & (index <= rankVisible + 3)
+              return (index >= rankVisible) &
+                (index <= rankVisible + visibleNumber - 1)
                 ? ReviewContents({ item, index })
                 : null;
             })}
@@ -354,4 +389,29 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
       )}
     </Container>
   );
+}
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+  useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
 }

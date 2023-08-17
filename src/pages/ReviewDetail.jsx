@@ -13,6 +13,12 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
+  ${({theme}) => theme.media.mobile} {
+    flex-direction: column;
+    padding: 0 0.5rem;
+    align-items: center;
+    gap: 4rem;
+  }
 `;
 
 const Contents = styled.section`
@@ -20,6 +26,9 @@ const Contents = styled.section`
   flex-direction: column;
   gap: 2rem;
   width: 65vw;
+  ${({theme}) => theme.media.mobile} {
+    width: 100%;
+  }
 `;
 
 const CategoryInfo = styled.p`
@@ -30,10 +39,16 @@ const CategoryInfo = styled.p`
 const VideoContainer = styled.div`
   display: flex;
   gap: 1rem;
+  ${({theme}) => theme.media.mobile} {
+    flex-direction: column;
+  }
 `;
 const VideoImg = styled.img`
   width: 25rem;
   border-radius: 1rem;
+  ${({theme}) => theme.media.mobile} {
+    width: 100%;
+  }
 `;
 const VideoInfo = styled.div`
   display: flex;
@@ -168,6 +183,11 @@ const RecommendContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  ${({theme}) => theme.media.mobile} {
+    width: 100%;
+    gap: 2rem;
+  }
+  
 `;
 const RecommendTitle = styled.p`
   font-weight: bold;
@@ -178,6 +198,9 @@ const RecommendList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  ${({theme}) => theme.media.mobile} {
+    gap: 2rem;
+  }
 `;
 const RecommendPost = styled.div`
   display: flex;
