@@ -28,7 +28,26 @@ const Wrapper = styled.div`
   padding: 2rem;
   background-color: #f9fafb;
   min-height: calc(100vh - 60px);
+  ${({theme}) => theme.media.mobile} {
+    padding: 0.8rem;
+  }
 `;
+
+const Footer = styled.footer`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 5rem 0 2rem 0;
+`
+const Logo = styled.h1`
+    color: ${({theme}) => theme.colors.primary};
+    font-size: 1.8rem;
+    font-family: "NanumSquareRoundEB";
+`
+const Info = styled.p`
+    color: #333;
+    font-size: 0.8rem;
+`
 export default function Router() {
   return (
     <BrowserRouter>
@@ -55,6 +74,10 @@ export default function Router() {
             <Route path="category" element={<Category />} />
           </Route>
         </Routes>
+        <Footer>
+            <Logo>TubeNova</Logo>
+            <Info>copyright © 2023 TubeNova All Rights Reserved.</Info>
+        </Footer>
       </Wrapper>
     </BrowserRouter>
   );

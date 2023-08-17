@@ -35,7 +35,7 @@ const PwInput = styled(IdInput)``;
 const LoginButton = styled.input`
   background-color: ${({ theme }) => theme.colors.primary};
   color: #fff;
-  padding: 0.5rem;
+  padding: 0.7rem 0.5rem;
   border-radius: 0.5rem;
   font-weight: bold;
   font-size: 0.8rem;

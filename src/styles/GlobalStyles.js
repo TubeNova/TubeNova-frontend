@@ -113,7 +113,7 @@ textarea {
 }
 html {
             ${({ theme }) => theme.media.mobile} {
-                font-size: 9px;
+                font-size: 16px;
             }
             ${({ theme }) => theme.media.tablet} {
                 font-size: 10px;

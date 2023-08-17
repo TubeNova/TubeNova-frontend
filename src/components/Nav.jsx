@@ -42,6 +42,9 @@ const NavTitle = styled.h1`
 const NavCategoryList = styled.ul`
   display: flex;
   gap: 0.8rem;
+  ${({theme}) => theme.media.mobile} {
+    display: none;
+  }
 `;
 const NavCategoryItem = styled(Link)`
   color: #949494;
@@ -60,6 +63,9 @@ const NavRightBox = styled.div`
   display: flex;
   gap: 3rem;
   align-items: center;
+  ${({ theme }) => theme.media.mobile} {
+    gap: 1rem;
+  }
 `;
 const NavSearchBox = styled.div`
   border-radius: 5.3rem;
@@ -70,6 +76,9 @@ const NavSearchBox = styled.div`
   justify-content: space-between;
   align-items: center;
   height: fit-content;
+  ${({ theme }) => theme.media.mobile} {
+    width: 10rem;
+  }
 `;
 const NavSearchInput = styled.input.attrs({ type: "text" })`
   background-color: transparent;
@@ -81,6 +90,9 @@ const NavSearchInput = styled.input.attrs({ type: "text" })`
   }
   &::placeholder {
     color: #c3c3c3;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    width: 8rem;
   }
 `;
 const NavSearchButton = styled.button`
@@ -100,6 +112,9 @@ const NavLoginButton = styled.button`
   align-items: center;
   font-size: 0.9rem;
   font-weight: bold;
+  ${({theme}) => theme.media.mobile} {
+    display: none;
+  }
 `;
 const UserTabButton = styled.button`
   color: #949494;
@@ -169,6 +184,9 @@ const ModalContainer = styled.div`
   box-shadow: 0px 4px 5px 2px rgba(0, 0, 0, 0.05);
   border-radius: 15px;
   background-color: #fff;
+  ${({theme}) => theme.media.mobile} {
+    width: 90vw;
+  }
 `;
 
 const MoreCategories = styled.ul`
@@ -183,6 +201,13 @@ const MoreCategories = styled.ul`
   padding: 1em 2rem 1rem 2rem;
   box-sizing: border-box;
   box-shadow: 0px 0.5px 5px 0px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  a {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 export default function Nav() {
