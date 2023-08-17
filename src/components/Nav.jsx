@@ -230,7 +230,7 @@ export default function Nav() {
     navigate(`/search?keyword=${searchKeyword}`)
     setSearchKeyword("")
   }
-  
+
   return (
     <>
       <NavContainer>
