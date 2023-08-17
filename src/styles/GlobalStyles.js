@@ -87,7 +87,7 @@ button {
 input[type="button"], input[type="submit"] {
     cursor: pointer;
 }
-input, input::placeholder {
+input, input::placeholder, button {
     font-family: "NanumSquareRound";
 }
 input::placeholder {
@@ -113,16 +113,13 @@ textarea {
 }
 html {
             ${({ theme }) => theme.media.mobile} {
-                font-size: 16px;
+                body {font-size: 16px;}
             }
             ${({ theme }) => theme.media.tablet} {
-                font-size: 13px;
+                body {font-size: 13px;}
             }
-            ${({ theme }) => theme.media.laptop1440} {
-                font-size: 13px;
-            }
-            ${({ theme }) => theme.media.laptop1680} {
-                font-size: 13px;
+            ${({ theme }) => theme.media.desktop} {
+                body {font-size: 13px;}
             }
         }
 `;

@@ -48,8 +48,8 @@ export const theme = {
     },
   },
   media: {
-    mobile: '@media (max-width: 767px)',
-    tablet: '@media (min-width: 767px) and (max-width: 1280px)',
+    mobile: '@media (max-width: 768px)',
+    tablet: '@media (min-width: 768px) and (max-width: 1280px)',
     desktop: '@media (min-width: 1280px)',
   },
 };

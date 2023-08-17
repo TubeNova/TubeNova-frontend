@@ -45,6 +45,5 @@
   },
   "devDependencies": {
     "surge": "^0.23.1"
-  },
-  "proxy": "http://localhost:8080"
+  }
 }
