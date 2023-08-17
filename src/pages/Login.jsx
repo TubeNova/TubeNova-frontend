@@ -106,6 +106,7 @@ export default function Login({ setUpdateModalOpen }) {
     }
   };
 
+
   return (
     <>
       <ServiceTitle>TubeNova</ServiceTitle>

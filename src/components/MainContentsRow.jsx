@@ -121,6 +121,7 @@ const ReviewThumbnailContainer = styled.div`
   width: 100%;
   flex-direction: column;
   background-image: url(${emptyImage});
+  height: fit-content;
 `;
 const ReviewThumbnail = styled.img`
   width: 100%;
@@ -187,7 +188,7 @@ const ReviewLikes = styled.span`
   }
 `;
 
-export default function MainContentsRow({ contentsTitle, userLikes }) {
+export default function MainContentsRow({ contentsTitle, userLikes, data }) {
   const [initialAnimation, setInitialAnimation] = useState(false);
   const [rankVisible, setRankVisible] = useState(0);
   const [rankBack, setRankBack] = useState(false);
@@ -236,30 +237,30 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
           }}
         >
           <ReviewThumbnailContainer>
-            <ReviewThumbnail src={item.thumbnail} />
+            <ReviewThumbnail src={item.videoImageUrl} />
             <ReviewVideoTitle>{item.videoTitle}</ReviewVideoTitle>
           </ReviewThumbnailContainer>
           <ReviewUserContainer>
             <ReviewUser>
               <IoPerson />
-              {item.userName}
+              {item.writer}
             </ReviewUser>
             <ReviewRate>
               {(function () {
                 const stars = [];
-                for (let i = 0; i < item.rate; i++) {
+                for (let i = 0; i < item.rating; i++) {
                   stars.push(<AiFillStar />);
                 }
-                for (let i = 0; i < 5 - item.rate; i++) {
+                for (let i = 0; i < 5 - item.rating; i++) {
                   stars.push(<AiOutlineStar />);
                 }
                 return stars;
               })()}
             </ReviewRate>
           </ReviewUserContainer>
-          <ReviewDesc>{item.desc}</ReviewDesc>
+          <ReviewDesc>{item.title}</ReviewDesc>
           <ReviewItemFooter>
-            <ReviewDate>{item.date}</ReviewDate>
+            <ReviewDate>{item.reviewCreatedTime.slice(0,10).replaceAll("-",".")}</ReviewDate>
             <ReviewLikes>
               <FaHeart />
               {item.likes}
@@ -379,7 +380,7 @@ export default function MainContentsRow({ contentsTitle, userLikes }) {
                 <FiChevronRight />
               </CarouselNextButton>
             </CarouselButtonContainer>
-            {Reviews.map((item, index) => {
+            {data.map((item, index) => {
               return (index >= rankVisible) &
                 (index <= rankVisible + visibleNumber - 1)
                 ? ReviewContents({ item, index })

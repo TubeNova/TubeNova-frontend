@@ -384,6 +384,10 @@ export default function Nav() {
     }
   }, [showSideNav]);
 
+  useEffect(()=>{
+    console.log(isLoggedIn)
+  },[isLoggedIn])
+
   const getMyInfo = async () => {
     try {
       await axios({

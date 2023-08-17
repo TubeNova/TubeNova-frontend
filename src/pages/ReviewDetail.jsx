@@ -1,19 +1,20 @@
 import { styled } from "styled-components";
-import {
-  ReviewDetailData,
-  ReviewRecommendData,
-} from "../data/ReviewDetailData";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { IoPerson } from "react-icons/io5";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
 import { BiLink } from "react-icons/bi";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { LoginStateAtom } from "../atom";
+import { ReviewRecommendData } from "../data/ReviewDetailData";
 
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     flex-direction: column;
     padding: 0 0.5rem;
     align-items: center;
@@ -26,7 +27,7 @@ const Contents = styled.section`
   flex-direction: column;
   gap: 2rem;
   width: 65vw;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     width: 100%;
   }
 `;
@@ -39,14 +40,14 @@ const CategoryInfo = styled.p`
 const VideoContainer = styled.div`
   display: flex;
   gap: 1rem;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     flex-direction: column;
   }
 `;
 const VideoImg = styled.img`
   width: 25rem;
   border-radius: 1rem;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     width: 100%;
   }
 `;
@@ -156,26 +157,33 @@ const LikeButton = styled.button`
   box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.14);
   gap: 0.5rem;
   font-size: 0.9rem;
-  &:hover{
-        transition: 0.2s;
-        background-color: #d35757;
-        color: #fff;
-        svg {
-            color: #fff;
-        }
+  ${({ active }) => active} {
+    transition: 0.2s;
+    background-color: #d35757;
+    color: #fff;
+    svg {
+      color: #fff;
     }
-    &:not(hover) {
-        transition: 0.2s;
-        background-color: #fff;
-        color: #000;
-        svg {
-            color: #d35757;
-        }
+  }
+  &:hover {
+    transition: 0.2s;
+    background-color: #d35757;
+    color: #fff;
+    svg {
+      color: #fff;
     }
+  }
+  &:not(hover) {
+    transition: 0.2s;
+    background-color: #fff;
+    color: #000;
+    svg {
+      color: #d35757;
+    }
+  }
   svg {
     font-size: 1.5rem;
     color: #d35757;
-
   }
 `;
 const RecommendContainer = styled.section`
@@ -183,11 +191,10 @@ const RecommendContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     width: 100%;
     gap: 2rem;
   }
-  
 `;
 const RecommendTitle = styled.p`
   font-weight: bold;
@@ -198,7 +205,7 @@ const RecommendList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     gap: 2rem;
   }
 `;
@@ -292,36 +299,72 @@ const RecommendLikes = styled.p`
 
 export default function ReviewDetail() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [post, setPost] = useState();
+  const postId = pathname.split("/review/")[1];
+  const { accessToken } = useRecoilValue(LoginStateAtom);
+
+  const getReviewDetail = async () => {
+    await axios({
+      mehtod: "get",
+      url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/${postId}`,
+    }).then((response) => {
+      console.log(response);
+      setPost(response.data);
+    });
+  };
+
+  const postLikes = async () => {
+    await axios({
+      method: "post",
+      url: "/likes",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`
+      },
+      data: {
+        reviewId: Number(postId),
+      },
+    }).then((response) => {
+      console.log(response);
+    });
+  };
+
+  useEffect(() => {
+    getReviewDetail();
+  }, []);
   return (
     <Container>
       <Contents>
         <CategoryInfo>
-          카테고리 {">"} {ReviewDetailData.category}
+          카테고리 {">"} {post?.category}
         </CategoryInfo>
         <VideoContainer>
-          <VideoImg src={ReviewDetailData.videoThumbnail} />
+          <VideoImg src={post?.videoImageUrl} />
           <VideoInfo>
             <VideoTitle>
-              {ReviewDetailData.videoTitle}{" "}
+              {post?.videoTitle}{" "}
               <BiLink
                 onClick={() => {
-                  window.open(ReviewDetailData.videoUrl, "_blank");
+                  window.open(post?.linkURL, "_blank");
                 }}
               />
             </VideoTitle>
             <VideoTags>
               <VideoTagRow>
                 <VideoTagName>채널</VideoTagName>
-                <VideoTagDesc>{ReviewDetailData.channelName}</VideoTagDesc>
+                <VideoTagDesc>{post?.channel}</VideoTagDesc>
               </VideoTagRow>
               <VideoTagRow>
                 <VideoTagName>날짜</VideoTagName>
-                <VideoTagDesc>{ReviewDetailData.videoDate}</VideoTagDesc>
+                <VideoTagDesc>
+                  {post?.videoDate.slice(0, 10).replaceAll("-", ".")}
+                </VideoTagDesc>
               </VideoTagRow>
-              <VideoTagRow>
+              {/* <VideoTagRow>
                 <VideoTagName>조회수</VideoTagName>
-                <VideoTagDesc>{ReviewDetailData.videoViews}</VideoTagDesc>
-              </VideoTagRow>
+                <VideoTagDesc>{post?.videoViews}</VideoTagDesc>
+              </VideoTagRow> */}
             </VideoTags>
           </VideoInfo>
         </VideoContainer>
@@ -331,14 +374,14 @@ export default function ReviewDetail() {
               <IoPerson />
             </ReviewUserIcon>
             <ReviewUserAndRate>
-              <ReviewUserName>{ReviewDetailData.userName}</ReviewUserName>
+              <ReviewUserName>{post?.writer}</ReviewUserName>
               <ReviewUserRate>
                 {(function () {
                   const stars = [];
-                  for (let i = 0; i < ReviewDetailData.rate; i++) {
+                  for (let i = 0; i < post?.rating; i++) {
                     stars.push(<AiFillStar />);
                   }
-                  for (let i = 0; i < 5 - ReviewDetailData.rate; i++) {
+                  for (let i = 0; i < 5 - post?.rating; i++) {
                     stars.push(<AiOutlineStar />);
                   }
                   return stars;
@@ -347,14 +390,19 @@ export default function ReviewDetail() {
             </ReviewUserAndRate>
           </ReviewUserContainer>
           <ReviewDescContainer>
-            <ReviewTitle>{ReviewDetailData.reviewTitle}</ReviewTitle>
-            <ReviewDesc>{ReviewDetailData.reviewDesc}</ReviewDesc>
+            <ReviewTitle>{post?.title}</ReviewTitle>
+            <ReviewDesc>{post?.contents}</ReviewDesc>
           </ReviewDescContainer>
         </ReviewContainer>
         <LikeContainer>
-          <LikeButton>
+          <LikeButton
+            active={post?.memberLikes}
+            onClick={() => {
+              postLikes();
+            }}
+          >
             <FaHeart />
-            {ReviewDetailData.reviewLikes}
+            {post?.likes}
           </LikeButton>
         </LikeContainer>
       </Contents>

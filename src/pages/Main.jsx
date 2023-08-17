@@ -8,6 +8,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Reviews } from "../data/Reviews";
 import MainContentsRow from "../components/MainContentsRow";
+import { useRecoilValue } from "recoil";
+import { LoginStateAtom } from "../atom";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -17,12 +20,45 @@ const Container = styled.div`
 `;
 
 
+
 export default function Main() {
+  const {accessToken} = useRecoilValue(LoginStateAtom)
+  const [popularReviewData, setPopularReviewData] = useState([]);
+  const [recentReviewData, setRecentReviewData] = useState([]);
+  
+  const getPopularReview = async() => {
+    await axios({
+      method: "get",
+      url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/weekly-popularity`,
+    }).then(function (response) {
+      console.log("getPopularReview")
+      console.log(response.data)
+      setPopularReviewData(response.data)
+    }).catch((e) => {
+    })
+  }
+  const getRecentReview = async() => {
+    await axios({
+      method: "get",
+      url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/latest`,
+    }).then(function (response) {
+      console.log("getRecentReview")
+      console.log(response.data.content)
+      setRecentReviewData(response.data.content)
+    }).catch((e) => {
+    })
+  }
+
+
+  useEffect(()=>{
+    getPopularReview()
+    getRecentReview()
+  },[])
   return (
     <Container>
-        <MainContentsRow contentsTitle="인기 Top 10"/>
-        <MainContentsRow contentsTitle="최신 리뷰"/>
-        <MainContentsRow contentsTitle="user 님 취향저격 리뷰 🔫❤️" userLikes={true}/>
+        <MainContentsRow contentsTitle="인기 Top 10" data={popularReviewData}/>
+        <MainContentsRow contentsTitle="최신 리뷰" data={recentReviewData}/>
+        {/* <MainContentsRow contentsTitle="user 님 취향저격 리뷰 🔫❤️" userLikes={true}/> */}
     </Container>
   );
 }

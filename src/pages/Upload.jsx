@@ -15,15 +15,24 @@ const Container = styled.div`
   display: flex;
   gap: 1.5rem;
   justify-content: center;
+  ${({theme}) => theme.media.mobile} {
+    flex-direction: column-reverse
+  }
 `;
 const EditorContainer = styled.div`
   width: 55vw;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  ${({theme}) => theme.media.mobile} {
+    width: 100%;
+  }
 `;
 const VideoContainer = styled.div`
   width: 35vw;
+  ${({theme}) => theme.media.mobile} {
+    width: 100%;
+  }
 `;
 const Box = styled.div`
   background-color: #fff;
@@ -220,6 +229,7 @@ const Upload = () => {
         },
       });
       setVideoInfo(response.data.items[0].snippet);
+      console.log(response.data.items[0].snippet)
     } catch (error) {
       console.log(error);
     }
@@ -233,7 +243,7 @@ const Upload = () => {
           videoUrl,
           channelName: videoInfo.channelTitle,
           videoTitle: videoInfo.title,
-          videoThumbnail: videoInfo.thumbnails.standard.url,
+          videoThumbnail: videoInfo.thumbnails.maxres.url,
           publishedAt: videoInfo.publishedAt,
         };
       });
@@ -299,7 +309,7 @@ const Upload = () => {
             channel: reviewInfo.channelName,
             videoDate: reviewInfo.publishedAt,
             title: reviewInfo.title,
-            linkUrl: reviewInfo.videoUrl,
+            linkURL: reviewInfo.videoUrl,
             contents: reviewInfo.desc,
             rating: reviewInfo.rate,
             category: reviewInfo.category,
@@ -426,7 +436,7 @@ const Upload = () => {
         {videoInfo.title !== undefined && (
           <RecommendPost>
             <RecommendImgWrapper>
-              <RecommendImg src={videoInfo.thumbnails.standard.url} />
+              <RecommendImg src={videoInfo.thumbnails.maxres.url} />
             </RecommendImgWrapper>
             <RecommendInfo>
               <RecommendVideoTitle>{videoInfo.title}</RecommendVideoTitle>
