@@ -42,7 +42,7 @@ const NavTitle = styled.h1`
 const NavCategoryList = styled.ul`
   display: flex;
   gap: 0.8rem;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     display: none;
   }
 `;
@@ -113,7 +113,7 @@ const NavLoginButton = styled.button`
   align-items: center;
   font-size: 0.9rem;
   font-weight: bold;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     display: none;
   }
 `;
@@ -185,7 +185,7 @@ const ModalContainer = styled.div`
   box-shadow: 0px 4px 5px 2px rgba(0, 0, 0, 0.05);
   border-radius: 15px;
   background-color: #fff;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     width: 90vw;
   }
 `;
@@ -230,6 +230,7 @@ export default function Nav() {
     navigate(`/search?keyword=${searchKeyword}`)
     setSearchKeyword("")
   }
+
   return (
     <>
       <NavContainer>
@@ -359,8 +360,13 @@ export default function Nav() {
           </Tool>
           <Tool
             onClick={() => {
-              setIsLoggedIn((prev) => {
-                return { ...prev, state: false };
+              setIsLoggedIn({
+                state: false,
+                accessToken:"",
+                accessTokenExpiresIn: 0,
+                authority: "",
+                grantType: "",
+                refreshToken:"",
               });
               setUserToolModal(false);
             }}

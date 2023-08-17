@@ -2,10 +2,11 @@ import { styled } from "styled-components";
 import { SocialLoginButton } from "../Login";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGridData } from "../../data/CategoryGridData";
 import { useEffect, useState } from "react";
 import CategoryGrid from "../../components/CategoryGrid";
+import axios from "axios";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -57,12 +58,34 @@ const NextButton = styled(SocialLoginButton)`
 export default function SignUpInterest() {
   const navigate = useNavigate();
   const [category, setCategory] = useState([]);
+  const location = useLocation();
+  let signUpInfo = location.state.signUpInfo
 
   const handleSignUp = () => {
     if (category.length === 0) {
       alert("1가지 이상의 관심사를 선택해주세요");
     } else {
-      navigate("/sign-up/success");
+      signUpInfo = {...signUpInfo, categories: category}
+      try {
+        axios({
+          method: "post",
+          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/auth/signup`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            username: signUpInfo.email,
+            password: signUpInfo.password,
+            name: signUpInfo.name,
+            categories: signUpInfo.categories
+          },
+        }).then((response) => {
+          console.log(response)
+          navigate("/sign-up/success");
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 

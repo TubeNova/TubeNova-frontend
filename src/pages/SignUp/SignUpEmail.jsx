@@ -4,6 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -96,7 +97,8 @@ const NextButton = styled(SocialLoginButton)`
 `;
 
 export default function SignUpEmail() {
-  const [loginInfo, setLoginInfo] = useState({
+  const [signUpInfo, setSignUpInfo] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -108,21 +110,21 @@ export default function SignUpEmail() {
   const handleNextStep = (e) => {
     e.preventDefault();
     if (
-      loginInfo.email.length > 0 &&
-      loginInfo.password.length > 0 &&
+      signUpInfo.name.length > 0 &&
+      signUpInfo.email.length > 0 &&
+      signUpInfo.password.length > 0 &&
       passwordInfo.passwordCheck.length > 0
     ) {
-        let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
-        if (regex.test(loginInfo.email)) {
-            if (passwordInfo.password === passwordInfo.passwordCheck) {
-                navigate("/sign-up/interest");
-              } else {
-                alert("비밀번호를 확인해주세요");
-              }
+      let regex = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
+      if (regex.test(signUpInfo.email)) {
+        if (passwordInfo.password === passwordInfo.passwordCheck) {
+          navigate("/sign-up/interest", {state:{signUpInfo: signUpInfo}});
         } else {
-            alert("이메일 형식을 확인해주세요")
+          alert("비밀번호를 확인해주세요");
         }
-
+      } else {
+        alert("이메일 형식을 확인해주세요");
+      }
     } else {
       alert("모두 입력해주세요");
     }
@@ -146,7 +148,19 @@ export default function SignUpEmail() {
                 type="text"
                 placeholder=" "
                 onChange={(e) => {
-                  setLoginInfo((prev) => {
+                  setSignUpInfo((prev) => {
+                    return { ...prev, name: e.target.value };
+                  });
+                }}
+              />
+              <InputLabel>이름</InputLabel>
+            </InputContainer>
+            <InputContainer>
+              <Input
+                type="text"
+                placeholder=" "
+                onChange={(e) => {
+                  setSignUpInfo((prev) => {
                     return { ...prev, email: e.target.value };
                   });
                 }}
@@ -158,7 +172,7 @@ export default function SignUpEmail() {
                 type="password"
                 placeholder=" "
                 onChange={(e) => {
-                  setLoginInfo((prev) => {
+                  setSignUpInfo((prev) => {
                     return { ...prev, password: e.target.value };
                   });
                   setPasswordInfo((prev) => {
