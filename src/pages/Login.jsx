@@ -4,6 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { LoginStateAtom } from "../atom";
+import axios from "axios";
 
 const ServiceTitle = styled.p`
   font-size: 2rem;
@@ -81,8 +82,26 @@ export default function Login({ setUpdateModalOpen }) {
   const handleLogin = (e) => {
     e.preventDefault();
     if (loginInfo.email.length > 0 && loginInfo.pw.length > 0) {
-      setUpdateModalOpen(false)
-      setIsLoggedIn((prev) => {return({...prev, state: true})})
+      try {
+        axios({
+          method: "post",
+          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/auth/login`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            username: loginInfo.email,
+            password: loginInfo.password
+          },
+        }).then((response) => {
+          console.log(response)
+          setUpdateModalOpen(false)
+          setIsLoggedIn(response)
+          setIsLoggedIn((prev) => {return({...prev, state: true})})
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
