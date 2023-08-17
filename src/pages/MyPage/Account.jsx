@@ -168,7 +168,7 @@ const Account = () => {
 
     try {
       let response = await axios.post(
-        'https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/member/me/update',
+        '/member/me/update',
         accountData,
         {
           headers: {

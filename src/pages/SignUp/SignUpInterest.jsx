@@ -69,7 +69,7 @@ export default function SignUpInterest() {
       try {
         axios({
           method: "post",
-          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/auth/signup`,
+          url: `/auth/signup`,
           headers: {
             "Content-Type": "application/json",
           },

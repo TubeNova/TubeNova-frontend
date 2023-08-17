@@ -22,6 +22,7 @@ import LikeReview from './pages/MyPage/LikeReview';
 import Rank from './pages/Rank';
 import ReviewDetail from './pages/ReviewDetail';
 import Search from './pages/Search';
+import CategoryReviewList from './pages/CategoryReviewList';
 const Wrapper = styled.div`
   margin-top: 60px;
   width: 100%;
@@ -56,6 +57,7 @@ export default function Router() {
       <Wrapper>
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/category/:categoryName" element={<CategoryReviewList />} />
           <Route path="/sign-up">
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/sign-up/email" element={<SignUpEmail />} />

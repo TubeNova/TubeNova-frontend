@@ -23,7 +23,7 @@ function MyWriting() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/my',
+          '/reviews/my',
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

@@ -392,7 +392,7 @@ export default function Nav() {
     try {
       await axios({
         method: "get",
-        url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/member/me`,
+        url: `/member/me`,
         headers: {
           Authorization: `Bearer ${isLoggedIn.accessToken}`,
         },

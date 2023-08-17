@@ -45,5 +45,6 @@
   },
   "devDependencies": {
     "surge": "^0.23.1"
-  }
+  },
+  "proxy" : "https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app"
 }

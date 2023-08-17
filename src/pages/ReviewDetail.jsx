@@ -307,7 +307,7 @@ export default function ReviewDetail() {
   const getReviewDetail = async () => {
     await axios({
       mehtod: "get",
-      url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/${postId}`,
+      url: `/reviews/${postId}`,
     }).then((response) => {
       console.log(response);
       setPost(response.data);

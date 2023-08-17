@@ -298,7 +298,7 @@ const Upload = () => {
       try {
         axios({
           method: "post",
-          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/posts`,
+          url: `/reviews/posts`,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,

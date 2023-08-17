@@ -86,7 +86,7 @@ export default function Login({ setUpdateModalOpen }) {
       try {
         axios({
           method: "post",
-          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/auth/login`,
+          url: `/auth/login`,
           headers: {
             "Content-Type": "application/json",
           },

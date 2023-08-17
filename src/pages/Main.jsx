@@ -29,7 +29,7 @@ export default function Main() {
   const getPopularReview = async() => {
     await axios({
       method: "get",
-      url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/weekly-popularity`,
+      url: `/reviews/weekly-popularity`,
     }).then(function (response) {
       console.log("getPopularReview")
       console.log(response.data)
@@ -40,7 +40,7 @@ export default function Main() {
   const getRecentReview = async() => {
     await axios({
       method: "get",
-      url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/reviews/latest`,
+      url: `/reviews/latest`,
     }).then(function (response) {
       console.log("getRecentReview")
       console.log(response.data.content)
