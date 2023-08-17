@@ -145,7 +145,7 @@ const TitleInput = styled.input`
 `;
 const DescInput = styled.textarea`
   height: 10rem;
-  &::placeholder{
+  &::placeholder {
     font-size: 0.9rem;
   }
 `;
@@ -197,7 +197,7 @@ const Upload = () => {
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [category, setCategory] = useState([]);
   const [reviewInfo, setReviewInfo] = useState({});
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const apiClient = axios.create({
     baseURL: "https://youtube.googleapis.com/youtube/v3",
@@ -271,20 +271,36 @@ const Upload = () => {
     });
   }, [rating]);
 
-  const handleSubmit = () =>{
+  const handleSubmit = () => {
     if (
-      reviewInfo.videoTitle.length > 0  &&
+      reviewInfo.videoTitle.length > 0 &&
       reviewInfo.category.length > 0 &&
       reviewInfo.desc.length > 0 &&
       reviewInfo.rate > 0
-    ){
-      alert("업로드되었습니다")
-      navigate("/review/1")
+    ) {
+      try {
+        axios({
+          method: "post",
+          url: `https://port-0-tubenova-backend-eu1k2llldkkxjy.sel3.cloudtype.app/auth/signup`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+           
+          },
+        }).then((response) => {
+          console.log(response);
+          alert("업로드되었습니다");
+          navigate(`/review/${response.data.id}`);
+        });
+      } catch (e) {
+        console.log(e);
+      }
     } else {
-      console.log(reviewInfo)
-      alert("모두 채워주세요")
+      console.log(reviewInfo);
+      alert("모두 채워주세요");
     }
-  }
+  };
   return (
     <Container>
       <EditorContainer>
@@ -382,7 +398,13 @@ const Upload = () => {
             ))}
           </div>
         </StarWrapper>
-        <SubmitButton type="submit" value="업로드" onClick={()=>{handleSubmit()}} />
+        <SubmitButton
+          type="submit"
+          value="업로드"
+          onClick={() => {
+            handleSubmit();
+          }}
+        />
       </EditorContainer>
       <VideoContainer>
         {videoInfo.title !== undefined && (

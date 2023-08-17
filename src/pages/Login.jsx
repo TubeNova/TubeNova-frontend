@@ -91,12 +91,12 @@ export default function Login({ setUpdateModalOpen }) {
           },
           data: {
             username: loginInfo.email,
-            password: loginInfo.password
+            password: loginInfo.pw
           },
         }).then((response) => {
           console.log(response)
           setUpdateModalOpen(false)
-          setIsLoggedIn(response)
+          setIsLoggedIn(response.data)
           setIsLoggedIn((prev) => {return({...prev, state: true})})
         });
       } catch (e) {
