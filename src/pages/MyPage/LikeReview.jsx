@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 import { IoPerson } from 'react-icons/io5';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import { Reviews } from '../../data/Reviews';
 
 const Container = styled.div`
@@ -116,7 +116,7 @@ const LikeReview = () => {
       <ContentRow>
         <ReviewRow>
           {Reviews.map((item, index) => (
-            <ReviewItem>
+            <ReviewItem key={index}>
               <ReviewThumbnailContainer>
                 <ReviewThumbnail src={item.thumbnail} />
                 <ReviewVideoTitle>{item.videoTitle}</ReviewVideoTitle>

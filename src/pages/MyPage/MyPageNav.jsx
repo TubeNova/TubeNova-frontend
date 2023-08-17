@@ -49,12 +49,7 @@ export default function MyPageNav() {
       >
         공감한 리뷰
       </NavLink>
-      <NavLink
-        to="/mypage/category"
-        $isActive={location.pathname === '/mypage/category'}
-      >
-        즐겨찾기 설정
-      </NavLink>
+
       <NavLink
         to="/mypage/account"
         $isActive={location.pathname === '/mypage/account'}
