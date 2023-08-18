@@ -1,20 +1,23 @@
-import { useEffect } from "react"
-import { useLocation, useNavigate } from "react-router"
-import { styled } from "styled-components"
-import { CategoryReviewData, CategoryReviewsData } from "../data/CategoryReviewData";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { IoPerson } from "react-icons/io5";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { FaHeart } from "react-icons/fa";
-import { useWindowSize } from "../hook/useWindow";
-import { CategoryGridData } from "../data/CategoryGridData";
+import { useEffect, useState } from 'react';
+import axios from 'axios'; // 아시오스를 import
+import { useLocation, useNavigate } from 'react-router';
+import { styled } from 'styled-components';
+// import { CategoryReviewData, CategoryReviewsData } from "../data/CategoryReviewData";
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { IoPerson } from 'react-icons/io5';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { FaHeart } from 'react-icons/fa';
+import { useWindowSize } from '../hook/useWindow';
+import { CategoryGridData } from '../data/CategoryGridData';
+import { useRecoilValue } from 'recoil';
+import { LoginStateAtom } from '../atom';
 
-const Container = styled.div``
-const Title= styled.h1`
-    margin: 10px 0 20px 0;
-    font-size: 18px;
-    font-weight: bold;
-`
+const Container = styled.div``;
+const Title = styled.h1`
+  margin: 10px 0 20px 0;
+  font-size: 18px;
+  font-weight: bold;
+`;
 
 const ReviewGrid = styled.div`
   display: grid;
@@ -28,7 +31,7 @@ const ReviewGrid = styled.div`
   ${({ theme }) => theme.media.mobile} {
     grid-template-columns: repeat(2, calc((100% - 0.8em) / 2));
   }
-`
+`;
 
 const ReviewItem = styled.div`
   display: flex;
@@ -45,7 +48,6 @@ const ReviewItem = styled.div`
     transform: scale(100%);
     transition: 0.3s;
   }
-  
 `;
 const ReviewThumbnailContainer = styled.div`
   display: flex;
@@ -89,7 +91,7 @@ const ReviewRate = styled.div`
   color: #f90;
   display: flex;
   align-items: center;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     font-size: 0.8rem;
   }
 `;
@@ -119,63 +121,91 @@ const ReviewLikes = styled.span`
     font-size: 1rem;
   }
 `;
-export default function CategoryReviewList () {
-    const {pathname} = useLocation()
-    const navigate = useNavigate()
-    const categoryName = pathname.split("/category/")[1]
-    
+export default function CategoryReviewList() {
+  const { accessToken } = useRecoilValue(LoginStateAtom);
 
-    return (
-        <Container>
-            <Title>{CategoryGridData.map((item) => {
-                  let result = "";
-                  if (item.id === categoryName) {
-                    result = item.name + item.icon;
-                  }
-                  return result;
-                })}</Title>
-        <ReviewGrid>
-            {CategoryReviewData.map((item, index)=>{return(
-                <ReviewItem
-                key={index}
-                onClick={() => {
-                  navigate(`/review/${item.id}`);
-                }}
-              >
-                <ReviewThumbnailContainer>
-                  <ReviewThumbnail src={item.videoImageUrl} />
-                  <ReviewVideoTitle>{item.videoTitle}</ReviewVideoTitle>
-                </ReviewThumbnailContainer>
-                <ReviewUserContainer>
-                  <ReviewUser>
-                    <IoPerson />
-                    {item.writer}
-                  </ReviewUser>
-                  <ReviewRate>
-                    {(function () {
-                      const stars = [];
-                      for (let i = 0; i < item.rating; i++) {
-                        stars.push(<AiFillStar />);
-                      }
-                      for (let i = 0; i < 5 - item.rating; i++) {
-                        stars.push(<AiOutlineStar />);
-                      }
-                      return stars;
-                    })()}
-                  </ReviewRate>
-                </ReviewUserContainer>
-                <ReviewDesc>{item.contents}</ReviewDesc>
-                <ReviewItemFooter>
-                  <ReviewDate>{item.reviewCreatedTime.slice(0,10).replaceAll("-",".")}</ReviewDate>
-                  <ReviewLikes>
-                    <FaHeart />
-                    {item.likes}
-                  </ReviewLikes>
-                </ReviewItemFooter>
-              </ReviewItem>
-            )})}
-        </ReviewGrid>
-        </Container>
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const categoryName = pathname.split('/category/')[1];
 
-    )
+  const [CategoryReviewData, setCategoryReviewData] = useState([]);
+
+  useEffect(() => {
+    // 로그인 인증 토큰을 헤더에 추가하고 백엔드에서 데이터를 가져오는 코드
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/reviews/latest/${categoryName}`, {
+          headers: {
+            AUTHORIZATION: `Bearer ${accessToken}`, // 토큰을 추가하세요
+          },
+        });
+        console.log(categoryName);
+        setCategoryReviewData(response.data.content); // 데이터 설정
+      } catch (error) {
+        console.error('There was an error fetching the data:', error);
+        console.log(categoryName);
+      }
+    };
+    fetchData();
+  }, [categoryName]);
+
+  return (
+    <Container>
+      <Title>
+        {CategoryGridData.map((item) => {
+          let result = '';
+          if (item.id === categoryName) {
+            result = item.name + item.icon;
+          }
+          return result;
+        })}
+      </Title>
+      <ReviewGrid>
+        {/* 교체 필요 부분 */}
+        {CategoryReviewData.map((item, index) => {
+          return (
+            <ReviewItem
+              key={index}
+              onClick={() => {
+                navigate(`/review/${item.id}`);
+              }}
+            >
+              <ReviewThumbnailContainer>
+                <ReviewThumbnail src={item.linkURL} />
+                <ReviewVideoTitle>{item.title}</ReviewVideoTitle>
+              </ReviewThumbnailContainer>
+              <ReviewUserContainer>
+                <ReviewUser>
+                  <IoPerson />
+                  {item.writer}
+                </ReviewUser>
+                <ReviewRate>
+                  {(function () {
+                    const stars = [];
+                    for (let i = 0; i < item.rating; i++) {
+                      stars.push(<AiFillStar />);
+                    }
+                    for (let i = 0; i < 5 - item.rating; i++) {
+                      stars.push(<AiOutlineStar />);
+                    }
+                    return stars;
+                  })()}
+                </ReviewRate>
+              </ReviewUserContainer>
+              <ReviewDesc>{item.contents}</ReviewDesc>
+              <ReviewItemFooter>
+                <ReviewDate>
+                  {item.reviewCreatedTime.slice(0, 10).replaceAll('-', '.')}
+                </ReviewDate>
+                <ReviewLikes>
+                  <FaHeart />
+                  {item.likes}
+                </ReviewLikes>
+              </ReviewItemFooter>
+            </ReviewItem>
+          );
+        })}
+      </ReviewGrid>
+    </Container>
+  );
 }
