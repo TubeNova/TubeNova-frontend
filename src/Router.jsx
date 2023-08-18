@@ -4,25 +4,26 @@ import {
   Route,
   Link,
   Routes,
-} from 'react-router-dom';
-import Main from './pages/Main';
-import Nav from './components/Nav';
-import SignUp from './pages/SignUp/SignUp';
-import { styled } from 'styled-components';
-import SignUpEmail from './pages/SignUp/SignUpEmail';
-import Upload from './pages/Upload';
-import SignUpInterest from './pages/SignUp/SignUpInterest';
-import SignUpSuccess from './pages/SignUp/SignUpSuccess';
+} from "react-router-dom";
+import Main from "./pages/Main";
+import Nav from "./components/Nav";
+import SignUp from "./pages/SignUp/SignUp";
+import { styled } from "styled-components";
+import SignUpEmail from "./pages/SignUp/SignUpEmail";
+import Upload from "./pages/Upload";
+import SignUpInterest from "./pages/SignUp/SignUpInterest";
+import SignUpSuccess from "./pages/SignUp/SignUpSuccess";
 
-import Account from './pages/MyPage/Account';
+import Account from "./pages/MyPage/Account";
 
-import MyWriting from './pages/MyPage/MyWriting';
-import LikeReview from './pages/MyPage/LikeReview';
+import MyWriting from "./pages/MyPage/MyWriting";
+import LikeReview from "./pages/MyPage/LikeReview";
 
-import Rank from './pages/Rank';
-import ReviewDetail from './pages/ReviewDetail';
-import Search from './pages/Search';
-import CategoryReviewList from './pages/CategoryReviewList';
+import Rank from "./pages/Rank";
+import ReviewDetail from "./pages/ReviewDetail";
+import Search from "./pages/Search";
+import CategoryReviewList from "./pages/CategoryReviewList";
+import UserPage from "./pages/UserPage";
 const Wrapper = styled.div`
   margin-top: 60px;
   width: 100%;
@@ -44,7 +45,7 @@ const Footer = styled.footer`
 const Logo = styled.h1`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 1.8rem;
-  font-family: 'NanumSquareRoundEB';
+  font-family: "NanumSquareRoundEB";
 `;
 const Info = styled.p`
   color: #333;
@@ -57,7 +58,11 @@ export default function Router() {
       <Wrapper>
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/category/:categoryName" element={<CategoryReviewList />} />
+          <Route
+            path="/category/:categoryName"
+            element={<CategoryReviewList />}
+          />
+          <Route path="/user/:userId" element={<UserPage />} />
           <Route path="/sign-up">
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/sign-up/email" element={<SignUpEmail />} />
@@ -70,7 +75,7 @@ export default function Router() {
           <Route path="/search" element={<Search />} />
           {/* 마이페이지 라우터 */}
           <Route path="/mypage" element={<MyWriting />}>
-            <Route index element={<div />} />{' '}
+            <Route index element={<div />} />{" "}
             <Route path="account" element={<Account />} />
             <Route path="likereview" element={<LikeReview />} />
           </Route>

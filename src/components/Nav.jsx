@@ -336,15 +336,14 @@ const SideNavUserBtnContainer = styled.div`
   display: flex;
   gap: 10px;
   margin-top: 10px;
-`
+`;
 const SideNavUserBtn = styled.button`
   font-weight: bold;
   font-size: 12px;
   color: #fff;
-  background-color: ${({theme}) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   padding: 6px;
   border-radius: 5px;
-  
 `;
 
 export default function Nav() {
@@ -384,9 +383,9 @@ export default function Nav() {
     }
   }, [showSideNav]);
 
-  useEffect(()=>{
-    console.log(isLoggedIn)
-  },[isLoggedIn])
+  useEffect(() => {
+    console.log(isLoggedIn);
+  }, [isLoggedIn]);
 
   const getMyInfo = async () => {
     try {
@@ -416,45 +415,52 @@ export default function Nav() {
             e.stopPropagation();
           }}
         >
-          <SideNavTitle>TubeNova</SideNavTitle>
+          <SideNavTitle
+            onClick={() => {
+              navigate("/");
+              setShowSideNav(false);
+            }}
+          >
+            TubeNova
+          </SideNavTitle>
           {isLoggedIn.state ? (
             <>
               <ProfileIcon>
                 <TbUser />
               </ProfileIcon>
-            <SideNavUserBtnContainer>
-            <SideNavUserBtn
-              onClick={() => {
-                setIsLoggedIn({
-                  state: false,
-                  accessToken: "",
-                  accessTokenExpiresIn: 0,
-                  authority: "",
-                  grantType: "",
-                  refreshToken: "",
-                });
-                setShowSideNav(false);
-              }}
-            >
-              로그아웃
-            </SideNavUserBtn>
-            <SideNavUserBtn
-              onClick={() => {
-                setShowSideNav(false);
-                navigate('/upload')
-              }}
-            >
-              글쓰기
-            </SideNavUserBtn>
-            <SideNavUserBtn
-              onClick={() => {
-                setShowSideNav(false);
-                navigate('/mypage')
-              }}
-            >
-              마이페이지
-            </SideNavUserBtn>
-            </SideNavUserBtnContainer>
+              <SideNavUserBtnContainer>
+                <SideNavUserBtn
+                  onClick={() => {
+                    setIsLoggedIn({
+                      state: false,
+                      accessToken: "",
+                      accessTokenExpiresIn: 0,
+                      authority: "",
+                      grantType: "",
+                      refreshToken: "",
+                    });
+                    setShowSideNav(false);
+                  }}
+                >
+                  로그아웃
+                </SideNavUserBtn>
+                <SideNavUserBtn
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/upload");
+                  }}
+                >
+                  글쓰기
+                </SideNavUserBtn>
+                <SideNavUserBtn
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/mypage");
+                  }}
+                >
+                  마이페이지
+                </SideNavUserBtn>
+              </SideNavUserBtnContainer>
             </>
           ) : (
             <SideNavLoginBtn
@@ -522,7 +528,6 @@ export default function Nav() {
               }
             })}
           </SideNavCategoryList>
-
         </SideNav>
       </SideNavOverlay>
       <NavContainer>

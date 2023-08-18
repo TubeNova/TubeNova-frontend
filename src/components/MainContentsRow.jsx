@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { Reviews } from "../data/Reviews";
 import emptyImage from "../static/empty.png";
 import { useWindowSize } from "../hook/useWindow";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -157,7 +158,7 @@ const ReviewRate = styled.div`
   color: #f90;
   display: flex;
   align-items: center;
-  ${({theme}) => theme.media.mobile} {
+  ${({ theme }) => theme.media.mobile} {
     font-size: 0.8rem;
   }
 `;
@@ -168,6 +169,10 @@ const ReviewDesc = styled.p`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  strong {
+    color: ${({theme}) => theme.colors.primary};
+    margin-right: 2px;
+  }
 `;
 const ReviewItemFooter = styled.div`
   display: flex;
@@ -190,11 +195,68 @@ const ReviewLikes = styled.span`
 
 export default function MainContentsRow({ contentsTitle, userLikes, data }) {
   const [initialAnimation, setInitialAnimation] = useState(false);
+  const [carouselData, setCarouselData] = useState();
   const [rankVisible, setRankVisible] = useState(0);
   const [rankBack, setRankBack] = useState(false);
   const [visibleNumber, setVisibleNumber] = useState(4);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategoryReview, setSelectedCategoryReview] = useState();
   const navigate = useNavigate();
   const windowSize = useWindowSize();
+
+  const getReviewByCategoryOrderByLikes = async (categoryName) => {
+    await axios({
+      method: "get",
+      url: `/reviews/${categoryName}/likes`,
+    }).then((response) => {
+      console.log(response.data.content);
+      setTimeout(()=>{
+        setCarouselData(response.data.content)
+      },500)
+    });
+  };
+
+  const getReviewByCategoryOrderById = async (categoryName) => {
+    await axios({
+      method: "get",
+      url: `/reviews/${categoryName}/id`,
+    }).then((response) => {
+      console.log(response.data.content);
+      setTimeout(()=>{
+        setCarouselData(response.data.content)
+      },500)
+    });
+  };
+
+
+  const getAllReviewOrderByLikes = async () => {
+    await axios({
+      method: "get",
+      url: `/reviews/weekly-popularity`,
+    }).then((response) => {
+      console.log(response.data);
+      setTimeout(()=>{
+        setCarouselData(response.data)
+      },500)
+    });
+  };
+
+  const getAllReviewOrderById = async () => {
+    await axios({
+      method: "get",
+      url: `/reviews/latest`,
+    }).then((response) => {
+      console.log(response.data);
+      setTimeout(()=>{
+        setCarouselData(response.data.content)
+      },500)
+    });
+  };
+
+  // useEffect(() => {
+  //   getAllReviewOrderById()
+  // }, []);
+  
   useEffect(() => {
     if (windowSize.width <= 768) {
       setVisibleNumber(2);
@@ -209,11 +271,11 @@ export default function MainContentsRow({ contentsTitle, userLikes, data }) {
   }, [rankVisible]);
 
   const BasicCategoryList = [
-    { name: "전체" },
-    { name: "엔터테인먼트" },
-    { name: "음악 · 댄스" },
-    { name: "뷰티 · 패션" },
-    { name: "게임" },
+    { name: "전체", id: "ALL" },
+    { name: "엔터테인먼트", id: "ENTERTAINMENT" },
+    { name: "음악 · 댄스", id: "MUSICNDANCE" },
+    { name: "뷰티 · 패션", id: "BEAUTYNFASHION" },
+    { name: "게임", id: "GAME" },
   ];
 
   const UserLikesCategoryList = [
@@ -258,9 +320,11 @@ export default function MainContentsRow({ contentsTitle, userLikes, data }) {
               })()}
             </ReviewRate>
           </ReviewUserContainer>
-          <ReviewDesc>{item.title}</ReviewDesc>
+          <ReviewDesc><strong>{item.title}</strong>{item.contents}</ReviewDesc>
           <ReviewItemFooter>
-            <ReviewDate>{item.reviewCreatedTime.slice(0,10).replaceAll("-",".")}</ReviewDate>
+            <ReviewDate>
+              {item.reviewCreatedTime.slice(0, 10).replaceAll("-", ".")}
+            </ReviewDate>
             <ReviewLikes>
               <FaHeart />
               {item.likes}
@@ -279,8 +343,32 @@ export default function MainContentsRow({ contentsTitle, userLikes, data }) {
         item.classList.remove("active");
       });
       target.classList.add("active");
+      if (target.id === "ALL") {
+        if (contentsTitle === "인기 Top 10") {
+          getAllReviewOrderByLikes()
+        } else {
+          getAllReviewOrderById()
+        }
+      } else {
+        if (contentsTitle === "인기 Top 10") {
+
+          getReviewByCategoryOrderByLikes(target.id);
+        } else{
+          getReviewByCategoryOrderById(target.id);
+
+        }
+
+      }
     }
   };
+
+
+  
+  useEffect(()=>{
+    setTimeout(()=>{
+      setCarouselData(data)
+    },100)
+  },[data])
   return (
     <Container>
       <ContentRowHeader>
@@ -295,7 +383,7 @@ export default function MainContentsRow({ contentsTitle, userLikes, data }) {
             <>
               <ContentCategoryList>
                 <ContentCategoryItem
-                  className={item.name === "전체" && "active"}
+                  className={[item.name === "전체" && "active", item.id]}
                   onClick={(e) => {
                     handleCategoryClick(e);
                   }}
@@ -344,6 +432,7 @@ export default function MainContentsRow({ contentsTitle, userLikes, data }) {
             {BasicCategoryList.map((item) => {
               return (
                 <ContentCategoryItem
+                  id={item.id}
                   className={item.name === "전체" && "active"}
                   onClick={(e) => {
                     handleCategoryClick(e);
@@ -380,16 +469,17 @@ export default function MainContentsRow({ contentsTitle, userLikes, data }) {
                 <FiChevronRight />
               </CarouselNextButton>
             </CarouselButtonContainer>
-            {data.map((item, index) => {
-              return (index >= rankVisible) &
-                (index <= rankVisible + visibleNumber - 1)
-                ? ReviewContents({ item, index })
-                : null;
-            })}
+            {(carouselData !== undefined) && (
+              carouselData?.map((item, index) => {
+                return (index >= rankVisible) &
+                  (index <= rankVisible + visibleNumber - 1)
+                  ? ReviewContents({ item, index })
+                  : null;
+              })
+            )}
           </ReviewRow>
         </>
       )}
     </Container>
   );
 }
-

@@ -31,8 +31,6 @@ export default function Main() {
       method: "get",
       url: `/reviews/weekly-popularity`,
     }).then(function (response) {
-      console.log("getPopularReview")
-      console.log(response.data)
       setPopularReviewData(response.data)
     }).catch((e) => {
     })
@@ -42,8 +40,6 @@ export default function Main() {
       method: "get",
       url: `/reviews/latest`,
     }).then(function (response) {
-      console.log("getRecentReview")
-      console.log(response.data.content)
       setRecentReviewData(response.data.content)
     }).catch((e) => {
     })

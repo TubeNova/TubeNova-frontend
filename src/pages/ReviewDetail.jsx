@@ -303,6 +303,8 @@ export default function ReviewDetail() {
   const [post, setPost] = useState();
   const postId = pathname.split("/review/")[1];
   const { accessToken } = useRecoilValue(LoginStateAtom);
+  const [category, setCategory] = useState("");
+  const [recommendPosts, setRecommendPosts] = useState();
 
   const getReviewDetail = async () => {
     await axios({
@@ -311,6 +313,7 @@ export default function ReviewDetail() {
     }).then((response) => {
       console.log(response);
       setPost(response.data);
+      setCategory(response.data.category)
     });
   };
 
@@ -330,9 +333,22 @@ export default function ReviewDetail() {
     });
   };
 
+  const getReviewByCategory = async (categoryName) => {
+    await axios({
+      method: "get",
+      url: `/reviews/${categoryName}/likes`,
+    }).then((response)=>{
+      console.log(response.data.content)
+      setRecommendPosts(response.data.content)
+    })
+  }
+
   useEffect(() => {
     getReviewDetail();
-  }, []);
+    if (category !== ""){
+      getReviewByCategory(category)
+    }
+  }, [category]);
   return (
     <Container>
       <Contents>
@@ -370,11 +386,11 @@ export default function ReviewDetail() {
         </VideoContainer>
         <ReviewContainer>
           <ReviewUserContainer>
-            <ReviewUserIcon>
+            <ReviewUserIcon onClick={()=>{navigate(`/user/${post?.member_id}`)}}>
               <IoPerson />
             </ReviewUserIcon>
             <ReviewUserAndRate>
-              <ReviewUserName>{post?.writer}</ReviewUserName>
+              <ReviewUserName onClick={()=>{navigate(`/user/${post?.member_id}`)}}>{post?.writer}</ReviewUserName>
               <ReviewUserRate>
                 {(function () {
                   const stars = [];
@@ -409,29 +425,29 @@ export default function ReviewDetail() {
       <RecommendContainer>
         <RecommendTitle>추천 리뷰 ✨</RecommendTitle>
         <RecommendList>
-          {ReviewRecommendData.map((item) => {
+          {recommendPosts?.map((item) => {
             return (
               <RecommendPost
-                key={item.reviewId}
+                key={item.id}
                 onClick={() => {
-                  navigate(`/review/${item.reviewId}`);
+                  navigate(`/review/${item.id}`);
                 }}
               >
                 <RecommendHeader>
                   <RecommendImgWrapper>
-                    <RecommendImg src={item.recommendThumbnail} />
+                    <RecommendImg src={item.videoImageUrl} />
                   </RecommendImgWrapper>
                   <RecommendInfo>
                     <RecommendVideoTitle>
-                      {item.recommendVideoTitle}
+                      {item.videoTitle}
                     </RecommendVideoTitle>
                     <RecommendRate>
                       {(function () {
                         const stars = [];
-                        for (let i = 0; i < item.recommendRate; i++) {
+                        for (let i = 0; i < item.rating; i++) {
                           stars.push(<AiFillStar />);
                         }
-                        for (let i = 0; i < 5 - item.recommendRate; i++) {
+                        for (let i = 0; i < 5 - item.rating; i++) {
                           stars.push(<AiOutlineStar />);
                         }
                         return stars;
@@ -439,14 +455,14 @@ export default function ReviewDetail() {
                     </RecommendRate>
                     <RecommendUser>
                       <IoPerson />
-                      {item.recommendUser}
+                      {item.writer}
                     </RecommendUser>
                   </RecommendInfo>
                 </RecommendHeader>
 
-                <RecommendDesc>{item.recommendDesc}</RecommendDesc>
+                <RecommendDesc>{item.title}?{item.title}:{item.contents}</RecommendDesc>
                 <RecommendFooter>
-                  <RecommendDate>{item.recommendDate}</RecommendDate>
+                  <RecommendDate>{item.reviewCreatedTime.slice(0,10).replaceAll("-",".")}</RecommendDate>
                   <RecommendLikes>
                     <FaHeart />
                     {item.recommendLikes}
